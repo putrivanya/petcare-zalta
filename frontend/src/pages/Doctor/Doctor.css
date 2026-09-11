@@ -1,0 +1,813 @@
+/* =====================================================
+   DOCTOR PAGE
+===================================================== */
+
+.doctor-page {
+  width: 100%;
+  min-height: 100vh;
+  background: #f8f9fb;
+  color: #1f2937;
+}
+
+/* =====================================================
+   HERO
+===================================================== */
+
+.doctor-hero {
+  position: relative;
+  min-height: 380px;
+
+  display: flex;
+  align-items: center;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(17, 24, 39, 0.96),
+      rgba(31, 41, 55, 0.92)
+    );
+
+  overflow: hidden;
+}
+
+.doctor-hero::before {
+  content: "";
+  position: absolute;
+
+  width: 420px;
+  height: 420px;
+
+  border-radius: 50%;
+
+  right: -120px;
+  top: -180px;
+
+  background: rgba(0, 0, 255, 0.15); /* biru */
+}
+
+.doctor-hero::after {
+  content: "";
+  position: absolute;
+
+  width: 300px;
+  height: 300px;
+
+  border-radius: 50%;
+
+  left: -100px;
+  bottom: -160px;
+
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.doctor-hero-content {
+  position: relative;
+  z-index: 2;
+
+  width: min(1200px, 92%);
+
+  margin: auto;
+
+  padding: 80px 0;
+}
+
+.doctor-label {
+  display: inline-flex;
+
+  align-items: center;
+  gap: 9px;
+
+  padding: 9px 16px;
+
+  border-radius: 30px;
+
+  background: rgba(0, 0, 255, 0.15);
+  border: 1px solid rgba(0, 0, 255, 0.45);
+
+  color: #4d8aff;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  letter-spacing: 1.5px;
+}
+
+.doctor-hero h1 {
+  margin: 20px 0 12px;
+
+  color: #ffffff;
+
+  font-size: clamp(
+    38px,
+    6vw,
+    68px
+  );
+
+  line-height: 1.05;
+
+  font-weight: 800;
+}
+
+.doctor-hero h1 span {
+  display: inline-block;
+
+  color: #4d8aff; /* biru terang */
+}
+
+.doctor-hero p {
+  max-width: 650px;
+
+  margin: 0;
+
+  color: #d1d5db;
+
+  font-size: 17px;
+
+  line-height: 1.8;
+}
+
+/* =====================================================
+   CONTENT
+===================================================== */
+
+.doctor-content {
+  width: min(1200px, 92%);
+
+  margin: auto;
+
+  padding: 70px 0 100px;
+}
+
+/* =====================================================
+   HEADING
+===================================================== */
+
+.doctor-heading {
+  display: flex;
+
+  align-items: flex-end;
+
+  justify-content: space-between;
+
+  gap: 30px;
+
+  margin-bottom: 45px;
+}
+
+.section-small {
+  display: block;
+
+  margin-bottom: 9px;
+
+  color: #0055dd;
+
+  font-size: 12px;
+
+  font-weight: 800;
+
+  letter-spacing: 2px;
+}
+
+.doctor-heading h2 {
+  margin: 0 0 8px;
+
+  color: #111827;
+
+  font-size: 38px;
+
+  line-height: 1.2;
+
+  font-weight: 800;
+}
+
+.doctor-heading p {
+  margin: 0;
+
+  color: #6b7280;
+
+  font-size: 15px;
+}
+
+/* =====================================================
+   SEARCH
+===================================================== */
+
+.doctor-search {
+  width: 320px;
+
+  min-width: 280px;
+
+  height: 52px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 0 17px;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 14px;
+
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+
+  transition: 0.25s ease;
+}
+
+.doctor-search:focus-within {
+  border-color: #0066ff;
+
+  box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.12);
+}
+
+.doctor-search svg {
+  color: #0055dd;
+
+  flex-shrink: 0;
+}
+
+.doctor-search input {
+  width: 100%;
+
+  border: none;
+
+  outline: none;
+
+  background: transparent;
+
+  color: #111827;
+
+  font-size: 14px;
+}
+
+.doctor-search input::placeholder {
+  color: #9ca3af;
+}
+
+/* =====================================================
+   GRID
+===================================================== */
+
+.doctor-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(0, 1fr)
+    );
+
+  gap: 28px;
+}
+
+/* =====================================================
+   CARD
+===================================================== */
+
+.doctor-card {
+  position: relative;
+
+  display: flex;
+
+  flex-direction: column;
+
+  overflow: hidden;
+
+  background: #ffffff;
+
+  border: 1px solid #ececec;
+
+  border-radius: 22px;
+
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.06);
+
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.doctor-card:hover {
+  transform: translateY(-7px);
+
+  border-color: rgba(0, 102, 255, 0.45);
+
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.11);
+}
+
+/* =====================================================
+   IMAGE
+===================================================== */
+
+.doctor-image {
+  position: relative;
+
+  width: 100%;
+
+  height: 270px;
+
+  overflow: hidden;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f1f5f9,
+      #e5e7eb
+    );
+}
+
+.doctor-image img {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+
+  transition:
+    transform 0.45s ease;
+}
+
+.doctor-card:hover
+.doctor-image img {
+  transform: scale(1.05);
+}
+
+.doctor-no-image,
+.doctor-image-fallback {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  color: #0055dd;
+
+  font-size: 75px;
+}
+
+.doctor-image-fallback span {
+  font-size: 75px;
+}
+
+/* =====================================================
+   BODY
+===================================================== */
+
+.doctor-card-body {
+  display: flex;
+
+  flex-direction: column;
+
+  flex: 1;
+
+  padding: 25px;
+}
+
+.doctor-specialization {
+  display: inline-flex;
+
+  align-items: center;
+
+  align-self: flex-start;
+
+  gap: 7px;
+
+  margin-bottom: 12px;
+
+  padding: 7px 11px;
+
+  border-radius: 20px;
+
+  background: #e8f0ff;
+
+  color: #0055dd;
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.5px;
+}
+
+.doctor-specialization svg {
+  font-size: 12px;
+}
+
+.doctor-card h3 {
+  margin: 0;
+
+  color: #111827;
+
+  font-size: 23px;
+
+  font-weight: 800;
+
+  line-height: 1.3;
+}
+
+/* =====================================================
+   DESCRIPTION
+===================================================== */
+
+.doctor-description {
+  margin: 12px 0 0;
+
+  color: #6b7280;
+
+  font-size: 14px;
+
+  line-height: 1.7;
+
+  display: -webkit-box;
+
+  -webkit-line-clamp: 3;
+
+  -webkit-box-orient: vertical;
+
+  overflow: hidden;
+}
+
+/* =====================================================
+   INFO
+===================================================== */
+
+.doctor-info {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 11px;
+
+  margin-top: 22px;
+
+  padding-top: 18px;
+
+  border-top: 1px solid #eeeeee;
+}
+
+.doctor-info > div {
+  display: flex;
+
+  align-items: center;
+
+  gap: 11px;
+
+  color: #4b5563;
+
+  font-size: 13px;
+
+  line-height: 1.4;
+}
+
+.doctor-info svg {
+  flex-shrink: 0;
+
+  width: 17px;
+
+  color: #0066ff;
+}
+
+.doctor-info span {
+  word-break: break-word;
+}
+
+/* =====================================================
+   BUTTON
+===================================================== */
+
+.doctor-button {
+  width: 100%;
+
+  min-height: 50px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 9px;
+
+  margin-top: auto;
+  padding: 14px 18px;
+
+  border: none;
+
+  border-radius: 13px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #0066ff,
+      #0044cc
+    );
+
+  color: #ffffff;
+
+  font-size: 14px;
+
+  font-weight: 800;
+
+  cursor: pointer;
+
+  pointer-events: auto;
+
+  user-select: none;
+
+  box-shadow: 0 8px 18px rgba(0, 102, 255, 0.30);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
+}
+
+.doctor-button svg {
+  font-size: 18px;
+}
+
+.doctor-button:hover {
+  filter: brightness(1.05);
+
+  transform: translateY(-2px);
+
+  box-shadow: 0 12px 24px rgba(0, 102, 255, 0.40);
+}
+
+.doctor-button:active {
+  transform: translateY(0);
+
+  box-shadow: 0 5px 12px rgba(0, 102, 255, 0.25);
+}
+
+.doctor-button:focus-visible {
+  outline: 3px solid rgba(0, 102, 255, 0.35);
+
+  outline-offset: 3px;
+}
+
+/* =====================================================
+   STATE
+===================================================== */
+
+.doctor-state {
+  min-height: 300px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+
+  padding: 40px;
+
+  background: #ffffff;
+
+  border: 1px solid #eeeeee;
+
+  border-radius: 20px;
+}
+
+.doctor-state > svg {
+  margin-bottom: 15px;
+
+  color: #0066ff;
+
+  font-size: 45px;
+}
+
+.doctor-state h3 {
+  margin: 0 0 8px;
+
+  color: #111827;
+
+  font-size: 21px;
+}
+
+.doctor-state p {
+  margin: 0;
+
+  color: #6b7280;
+
+  font-size: 14px;
+}
+
+.doctor-state.error > svg {
+  color: #dc2626;
+}
+
+.doctor-state.error button {
+  margin-top: 20px;
+
+  padding: 11px 20px;
+
+  border: none;
+
+  border-radius: 10px;
+
+  background: #111827;
+
+  color: #ffffff;
+
+  cursor: pointer;
+
+  font-weight: 700;
+}
+
+.doctor-state.error button:hover {
+  background: #374151;
+}
+
+/* =====================================================
+   LOADING
+===================================================== */
+
+.loading-spinner {
+  width: 42px;
+  height: 42px;
+
+  margin-bottom: 15px;
+
+  border: 4px solid #eeeeee;
+
+  border-top-color: #0066ff;
+
+  border-radius: 50%;
+
+  animation:
+    doctor-spin 0.8s
+    linear infinite;
+}
+
+@keyframes doctor-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =====================================================
+   TOMBOL KEMBALI
+===================================================== */
+
+.back-button-container {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  z-index: 10;
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 10px 20px;
+
+  border: none;
+  border-radius: 30px;
+
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(4px);
+
+  color: #0044cc;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+
+  transition:
+    background 0.25s ease,
+    transform 0.2s ease,
+    box-shadow 0.25s ease;
+}
+
+.back-button:hover {
+  background: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 255, 0.15);
+}
+
+.back-button:active {
+  transform: translateY(0);
+}
+
+.back-button svg {
+  font-size: 16px;
+}
+
+/* =====================================================
+   TABLET
+===================================================== */
+
+@media (max-width: 1000px) {
+
+  .doctor-grid {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+
+  .doctor-heading {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  .doctor-search {
+    width: 100%;
+  }
+}
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 650px) {
+
+  .doctor-hero {
+    min-height: 320px;
+  }
+
+  .doctor-hero-content {
+    padding: 60px 0;
+  }
+
+  .doctor-hero h1 {
+    font-size: 40px;
+  }
+
+  .doctor-hero p {
+    font-size: 14px;
+  }
+
+  .doctor-content {
+    padding-top: 45px;
+  }
+
+  .doctor-heading h2 {
+    font-size: 30px;
+  }
+
+  .doctor-grid {
+    grid-template-columns: 1fr;
+
+    gap: 20px;
+  }
+
+  .doctor-image {
+    height: 250px;
+  }
+
+  .doctor-card-body {
+    padding: 21px;
+  }
+
+  .back-button-container {
+    top: 16px;
+    left: 16px;
+  }
+
+  .back-button {
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+}
+
+/* =====================================================
+   SMALL MOBILE
+===================================================== */
+
+@media (max-width: 400px) {
+
+  .doctor-hero h1 {
+    font-size: 34px;
+  }
+
+  .doctor-content {
+    width: 94%;
+  }
+
+  .doctor-card-body {
+    padding: 18px;
+  }
+
+  .doctor-button {
+    font-size: 13px;
+  }
+}

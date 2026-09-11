@@ -1,0 +1,412 @@
+/* ===================================================
+   PALET WARNA & VARIABEL DESAIN PETCARE HUB ZALTA
+   =================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --zalta-teal: #028090;
+  --zalta-teal-light: #e6f2f3;
+  --zalta-mint: #00a896;
+  --zalta-amber: #f4a261;
+  --zalta-coral: #e76f51;
+  --zalta-dark: #1d2d44;
+  --zalta-dark-muted: #4a5568;
+  --zalta-bg: #f2f7f5;
+  --zalta-card-bg: #ffffff;
+  --zalta-border: #e2e8f0;
+  
+  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --shadow-md: 0 10px 25px -5px rgba(2, 128, 144, 0.08), 0 8px 10px -6px rgba(2, 128, 144, 0.04);
+  --shadow-lg: 0 20px 30px -10px rgba(2, 128, 144, 0.15);
+  
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 24px;
+  --radius-full: 9999px;
+}
+
+/* Global Reset & Base Typography */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--zalta-bg);
+  color: var(--zalta-dark);
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.landing-container {
+  width: 100%;
+}
+
+.landing-section {
+  padding: 5.5rem 1.5rem;
+  position: relative;
+}
+
+/* Header Sections */
+.section-header-center {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto 3.5rem auto;
+}
+
+.section-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--zalta-teal-light);
+  color: var(--zalta-teal);
+  padding: 0.4rem 1rem;
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 0.8rem;
+}
+
+.section-title {
+  color: var(--zalta-dark);
+  font-size: 2.4rem;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+.section-description {
+  color: var(--zalta-dark-muted);
+  font-size: 1.05rem;
+  margin-top: 0.8rem;
+}
+
+/* ===================================================
+   SECTION TENTANG KAMI
+   =================================================== */
+.about-section {
+  background-color: var(--zalta-card-bg);
+}
+
+.about-container {
+  max-width: 1140px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.about-image-wrapper {
+  position: relative;
+}
+
+.about-image {
+  width: 100%;
+  height: 420px;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Floating Card Accent di Foto */
+.about-floating-card {
+  position: absolute;
+  bottom: -20px;
+  right: -20px;
+  background: white;
+  padding: 1.2rem 1.5rem;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  border-left: 5px solid var(--zalta-amber);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.about-floating-card .number {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--zalta-teal);
+}
+
+.about-floating-card .label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--zalta-dark-muted);
+  line-height: 1.2;
+}
+
+.about-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.about-text {
+  color: var(--zalta-dark-muted);
+  font-size: 1.02rem;
+  margin-bottom: 1.2rem;
+  line-height: 1.7;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: linear-gradient(135deg, var(--zalta-teal), var(--zalta-mint));
+  color: white;
+  border: none;
+  padding: 1rem 2.2rem;
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(2, 128, 144, 0.25);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-top: 0.8rem;
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 28px rgba(2, 128, 144, 0.35);
+}
+
+/* ===================================================
+   SECTION SHOWCASE CATEGORY HEWAN
+   =================================================== */
+.pet-category-section {
+  background-color: var(--zalta-bg);
+}
+
+.pet-category-grid {
+  max-width: 1140px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.pet-category-card {
+  background: var(--zalta-card-bg);
+  padding: 2.2rem 1.5rem;
+  border-radius: var(--radius-md);
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--zalta-border);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.pet-category-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, var(--zalta-teal), var(--zalta-amber));
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.pet-category-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-md);
+  border-color: transparent;
+}
+
+.pet-category-card:hover::before {
+  opacity: 1;
+}
+
+.pet-icon-box {
+  width: 64px;
+  height: 64px;
+  background-color: var(--zalta-teal-light);
+  color: var(--zalta-teal);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.2rem auto;
+  font-size: 1.8rem;
+  transition: all 0.3s ease;
+}
+
+.pet-category-card:hover .pet-icon-box {
+  background-color: var(--zalta-teal);
+  color: white;
+  transform: scale(1.08);
+}
+
+.pet-category-card h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--zalta-dark);
+  margin-bottom: 0.5rem;
+}
+
+.pet-category-card p {
+  font-size: 0.88rem;
+  color: var(--zalta-dark-muted);
+  line-height: 1.5;
+}
+
+/* ===================================================
+   SECTION KONSULTASI (FORMULIR TERPADU)
+   =================================================== */
+.consultation-section {
+  background: linear-gradient(180deg, #ffffff 0%, var(--zalta-bg) 100%);
+}
+
+.consultation-card {
+  max-width: 720px;
+  margin: 0 auto;
+  background: var(--zalta-card-bg);
+  padding: 3rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--zalta-border);
+}
+
+.consult-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+}
+
+.consultation-form .form-group {
+  margin-bottom: 1.3rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.consultation-form label {
+  font-weight: 700;
+  font-size: 0.88rem;
+  margin-bottom: 0.5rem;
+  color: var(--zalta-dark);
+}
+
+.consultation-form input,
+.consultation-form select,
+.consultation-form textarea {
+  padding: 0.95rem 1.1rem;
+  border: 1.5px solid var(--zalta-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.95rem;
+  font-family: inherit;
+  outline: none;
+  background-color: #fafcfb;
+  transition: all 0.25s ease;
+  color: var(--zalta-dark);
+}
+
+.consultation-form input:focus,
+.consultation-form select:focus,
+.consultation-form textarea:focus {
+  border-color: var(--zalta-teal);
+  background-color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(2, 128, 144, 0.12);
+}
+
+.btn-submit-consult {
+  background: linear-gradient(135deg, var(--zalta-amber), var(--zalta-coral));
+  color: white;
+  border: none;
+  padding: 1.1rem 1.8rem;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  cursor: pointer;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  font-size: 1.02rem;
+  box-shadow: 0 8px 20px rgba(244, 162, 97, 0.3);
+  transition: all 0.3s ease;
+  margin-top: 0.5rem;
+}
+
+.btn-submit-consult:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 25px rgba(244, 162, 97, 0.45);
+}
+
+/* ===================================================
+   SECTION KONTAK
+   =================================================== */
+.contact-section {
+  background-color: var(--zalta-card-bg);
+}
+
+.contact-grid {
+  max-width: 1140px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.contact-card {
+  background: var(--zalta-bg);
+  padding: 2.2rem;
+  border-radius: var(--radius-md);
+  text-align: center;
+  border: 1px solid var(--zalta-border);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.contact-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-sm);
+  background: #ffffff;
+}
+
+.contact-icon-wrapper {
+  background: var(--zalta-teal);
+  color: white;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.2rem auto;
+  font-size: 1.4rem;
+  box-shadow: 0 6px 15px rgba(2, 128, 144, 0.25);
+}
+
+.contact-card h3 {
+  color: var(--zalta-dark);
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+}
+
+.contact-card p {
+  color: var(--zalta-dark-muted);
+  font-size: 0.95rem;
+}
+
+/* Responsive Handling */
+@media (max-width: 900px) {
+  .about-container {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+  .consult-grid-2 {
+    grid-template-columns: 1fr;
+  }
+  .section-title {
+    font-size: 1.9rem;
+  }
+}

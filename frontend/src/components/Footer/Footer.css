@@ -1,0 +1,114 @@
+.footer {
+  background-color: #2bc0cb; /* Warna Toska Utama */
+  color: #ffffff;
+  padding: 60px 8% 20px 8%;
+  box-sizing: border-box;
+}
+
+.footer-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 40px;
+  max-width: 1200px;
+  margin: 0 auto 40px auto;
+}
+
+/* Kolom Brand */
+.brand-col {
+  max-width: 300px;
+}
+
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.brand-desc {
+  font-size: 13.5px;
+  line-height: 1.6;
+  opacity: 0.9;
+  margin: 0;
+}
+
+/* Judul Kolom Footer */
+.footer-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+}
+
+/* List Navigasi & Kontak */
+.footer-links,
+.footer-contact {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-links li {
+  margin-bottom: 10px;
+}
+
+.footer-links a {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 14px;
+  opacity: 0.85;
+  transition: opacity 0.2s ease, padding-left 0.2s ease;
+}
+
+.footer-links a:hover {
+  opacity: 1;
+  padding-left: 4px;
+  font-weight: 600;
+}
+
+.footer-contact li {
+  font-size: 13.5px;
+  margin-bottom: 10px;
+  opacity: 0.9;
+  line-height: 1.4;
+}
+
+/* Social Media Icons */
+.social-links {
+  display: flex;
+  gap: 12px;
+}
+
+.social-icon {
+  width: 38px;
+  height: 38px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-size: 16px;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.social-icon:hover {
+  background-color: #ffffff;
+  transform: translateY(-3px);
+}
+
+/* Section Copyright Bawah */
+.footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+  padding-top: 20px;
+  text-align: center;
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+.footer-bottom p {
+  margin: 0;
+}

@@ -1,0 +1,27 @@
+.dashboard-card{
+
+    background:white;
+
+    border-radius:18px;
+
+    padding:25px;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+
+}
+
+.dashboard-card h4{
+
+    color:#666;
+
+    margin-bottom:15px;
+
+}
+
+.dashboard-card h2{
+
+    color:#2E7D32;
+
+    font-size:34px;
+
+}

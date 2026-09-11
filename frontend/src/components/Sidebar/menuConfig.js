@@ -1,0 +1,77 @@
+import {
+  LayoutDashboard,
+  ShoppingBag,
+  Stethoscope,
+  Scissors,
+  Hotel,
+  PawPrint,
+  CalendarCheck,
+  CreditCard,
+  Star,
+  Users,
+  FileText,
+  Settings,
+  Package,
+  List,
+  ShoppingCart,
+  Syringe,
+  Heart,
+} from "lucide-react";
+
+export const menuItems = [
+  {
+    id: "dashboard",
+    name: "Dashboard",
+    icon: LayoutDashboard,
+  },
+  {
+    id: "master",
+    name: "Master Data",
+    icon: Package,
+    submenus: [
+      { id: "produk", name: "Produk", icon: ShoppingBag },
+      { id: "dokter", name: "Dokter", icon: Stethoscope },
+      { id: "grooming", name: "Grooming", icon: Scissors },
+      { id: "pet-hotel", name: "Pet Hotel", icon: Hotel },
+      { id: "adopsi", name: "Adopsi", icon: PawPrint },
+      { id: "kategori-hewan", name: "Kategori Hewan", icon: List },
+    ],
+  },
+  {
+    id: "transaksi",
+    name: "Transaksi",
+    icon: CalendarCheck,
+    submenus: [
+      { id: "booking-shop", name: "Booking Shop", icon: ShoppingCart },
+      { id: "booking-grooming", name: "Booking Grooming", icon: Scissors },
+      { id: "booking-dokter", name: "Booking Dokter", icon: Syringe },
+      { id: "booking-hotel", name: "Booking Pet Hotel", icon: Hotel },
+      { id: "booking-adopsi", name: "Booking Adopsi", icon: Heart },
+      { id: "pembayaran", name: "Pembayaran", icon: CreditCard },
+    ],
+  },
+  {
+    id: "pengguna",
+    name: "Pengguna",
+    icon: Users,
+    submenus: [{ id: "users", name: "Users", icon: Users }],
+  },
+  {
+    id: "feedback",
+    name: "Feedback",
+    icon: Star,
+    submenus: [{ id: "review", name: "Review", icon: Star }],
+  },
+  {
+    id: "laporan",
+    name: "Laporan",
+    icon: FileText,
+    submenus: [{ id: "laporan", name: "Laporan", icon: FileText }],
+  },
+  {
+    id: "sistem",
+    name: "Sistem",
+    icon: Settings,
+    submenus: [{ id: "pengaturan", name: "Pengaturan", icon: Settings }],
+  },
+];

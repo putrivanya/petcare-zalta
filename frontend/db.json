@@ -1,0 +1,200 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Makanan Anjing Premium",
+      "category": "Makanan",
+      "price": 150000,
+      "stock": 50,
+      "image": "https://via.placeholder.com/150",
+      "badge": "Best Seller",
+      "description": "Makanan kering untuk anjing dewasa",
+      "animalType": "Anjing"
+    },
+    {
+      "id": 2,
+      "name": "Makanan Kucing Basah",
+      "category": "Makanan",
+      "price": 85000,
+      "stock": 30,
+      "image": "https://via.placeholder.com/150",
+      "badge": "New",
+      "description": "Makanan basah untuk kucing semua umur",
+      "animalType": "Kucing"
+    },
+    {
+      "id": 3,
+      "name": "Sisir Bulu Kelinci",
+      "category": "Aksesoris",
+      "price": 45000,
+      "stock": 20,
+      "image": "https://via.placeholder.com/150",
+      "badge": "",
+      "description": "Sisir khusus bulu kelinci",
+      "animalType": "Kelinci"
+    }
+  ],
+  "doctors": [
+    {
+      "id": 1,
+      "name": "Dr. Budi",
+      "specialization": "Dokter Umum",
+      "experience": "5 tahun",
+      "price": 100000,
+      "image": "https://via.placeholder.com/150",
+      "description": "Dokter hewan umum untuk semua hewan",
+      "animalType": "Semua"
+    },
+    {
+      "id": 2,
+      "name": "Dr. Ani",
+      "specialization": "Spesialis Anjing",
+      "experience": "8 tahun",
+      "price": 150000,
+      "image": "https://via.placeholder.com/150",
+      "description": "Spesialis kesehatan anjing",
+      "animalType": "Anjing"
+    }
+  ],
+  "grooming": [
+    {
+      "id": 1,
+      "serviceName": "Grooming Anjing",
+      "description": "Potong rambut dan mandi anjing",
+      "duration": "1 jam",
+      "price": 120000,
+      "image": "https://via.placeholder.com/150",
+      "animalType": "Anjing"
+    },
+    {
+      "id": 2,
+      "serviceName": "Grooming Kucing",
+      "description": "Mandi dan sisir bulu kucing",
+      "duration": "45 menit",
+      "price": 100000,
+      "image": "https://via.placeholder.com/150",
+      "animalType": "Kucing"
+    }
+  ],
+  "hotels": [
+    {
+      "id": 1,
+      "roomType": "Kamar Anjing",
+      "capacity": 2,
+      "facilities": "AC, kandang besar, mainan",
+      "pricePerNight": 200000,
+      "image": "https://via.placeholder.com/150",
+      "description": "Kamar nyaman untuk anjing",
+      "animalType": "Anjing"
+    },
+    {
+      "id": 2,
+      "roomType": "Kamar Kucing",
+      "capacity": 3,
+      "facilities": "AC, tempat tidur empuk, pohon kucing",
+      "pricePerNight": 150000,
+      "image": "https://via.placeholder.com/150",
+      "description": "Kamar khusus kucing",
+      "animalType": "Kucing"
+    }
+  ],
+  "adoptions": [
+    {
+      "id": 1,
+      "petName": "Bruno",
+      "type": "Anjing",
+      "breed": "Golden Retriever",
+      "age": "2 tahun",
+      "gender": "Jantan",
+      "color": "Coklat",
+      "weight": "25 kg",
+      "description": "Anjing ramah dan suka bermain",
+      "status": "Tersedia",
+      "image": "https://via.placeholder.com/150"
+    },
+    {
+      "id": 2,
+      "petName": "Milo",
+      "type": "Kucing",
+      "breed": "Persia",
+      "age": "1 tahun",
+      "gender": "Betina",
+      "color": "Putih",
+      "weight": "4 kg",
+      "description": "Kucing manis dan suka dimanja",
+      "status": "Tersedia",
+      "image": "https://via.placeholder.com/150"
+    }
+  ],
+  "transactions": [
+    {
+      "id": 1,
+      "userName": "Andi",
+      "userEmail": "andi@email.com",
+      "itemName": "Makanan Anjing",
+      "type": "Shop",
+      "quantity": 2,
+      "price": 150000,
+      "date": "2026-08-19",
+      "status": "menunggu",
+      "paymentStatus": "belum_bayar",
+      "note": "Tolong kirim cepat"
+    },
+    {
+      "id": 2,
+      "userName": "Siti",
+      "userEmail": "siti@email.com",
+      "itemName": "Grooming Kucing",
+      "type": "Grooming",
+      "quantity": 1,
+      "price": 100000,
+      "date": "2026-08-18",
+      "status": "dikonfirmasi",
+      "paymentStatus": "menunggu_verifikasi",
+      "note": ""
+    }
+  ],
+  "reviews": [
+    {
+      "id": 1,
+      "userName": "Budi",
+      "email": "budi@email.com",
+      "rating": 5,
+      "comment": "Pelayanan sangat baik!",
+      "serviceName": "Grooming Anjing",
+      "status": "menunggu"
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "nama": "Admin",
+      "email": "admin@petcare.com",
+      "role": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": 2,
+      "nama": "User biasa",
+      "email": "user@email.com",
+      "role": "user",
+      "password": "user123"
+    }
+  ],
+  "kategoriHewan": [
+    { "id": 1, "nama": "Anjing", "icon": "🐕" },
+    { "id": 2, "nama": "Kucing", "icon": "🐈" },
+    { "id": 3, "nama": "Kelinci", "icon": "🐇" },
+    { "id": 4, "nama": "Burung", "icon": "🐦" },
+    { "id": 5, "nama": "Hamster", "icon": "🐹" },
+    { "id": 6, "nama": "Hewan Lainnya", "icon": "🐾" }
+  ],
+  "pengaturan": {
+    "id": 1,
+    "namaAplikasi": "PetCare Hub",
+    "logo": "https://via.placeholder.com/150",
+    "alamat": "Jl. Contoh No. 123, Kota",
+    "telepon": "08123456789",
+    "email": "info@petcare.com"
+  }
+}

@@ -1,0 +1,762 @@
+/* ============================================
+   Adoption.css - Halaman Daftar Hewan Adopsi
+   Tema: Biru Langit (Sky Blue)
+   Versi: 2.2 (Responsive & Refined)
+   ============================================ */
+
+/* ---------- ROOT VARIABLES ---------- */
+:root {
+  --primary: #3498DB;
+  --primary-light: #5DADE2;
+  --primary-dark: #2E86C1;
+  --primary-bg: #EBF5FB;
+  --secondary: #F4A261;
+  --secondary-light: #F9E79F;
+  --text-dark: #1E2F3D;
+  --text-muted: #5D7A8C;
+  --text-light: #FFFFFF;
+  --border-color: #D6E4F0;
+  --shadow-sm: 0 4px 12px rgba(0, 20, 30, 0.06);
+  --shadow-md: 0 8px 30px rgba(0, 20, 30, 0.10);
+  --shadow-lg: 0 20px 50px rgba(0, 20, 30, 0.15);
+  --radius: 16px;
+  --radius-sm: 8px;
+  --transition: 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* ---------- RESET / BASE ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  background: var(--primary-bg);
+  color: var(--text-dark);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- NOTIFICATION BANNER ---------- */
+.notification-banner {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  background: var(--primary);
+  color: #fff;
+  padding: 14px 28px;
+  border-radius: 60px;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  z-index: 9999;
+  max-width: 90%;
+  min-width: 300px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s ease, transform 0.35s ease, visibility 0.35s;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(6px);
+  background: rgba(52, 152, 219, 0.95);
+}
+
+.notification-banner.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.notification-banner.success {
+  background: rgba(52, 152, 219, 0.95);
+}
+
+.notification-banner .notification-icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.notification-banner .close-notif {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 4px 10px;
+  margin-left: auto;
+  border-radius: 40px;
+  transition: var(--transition);
+}
+
+.notification-banner .close-notif:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
+/* ---------- PAGE WRAPPER ---------- */
+.adoption-page {
+  min-height: 100vh;
+  background: var(--primary-bg);
+  padding-bottom: 80px;
+  position: relative;
+}
+
+/* ---------- HERO SECTION ---------- */
+.adoption-hero {
+  background: linear-gradient(145deg, #1A5276 0%, #3498DB 55%, #5DADE2 100%);
+  padding: 80px 24px 70px;
+  text-align: center;
+  color: var(--text-light);
+  position: relative;
+  overflow: hidden;
+}
+
+.adoption-hero::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 70px;
+  background: var(--primary-bg);
+  border-radius: 60% 60% 0 0 / 100% 100% 0 0;
+}
+
+.hero-content {
+  max-width: 720px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+/* ============================================
+   ✅ TOMBOL KEMBALI — DI TEPI KIRI HALAMAN
+   (Fixed positioning — nempel di viewport)
+   ============================================ */
+.back-button-container {
+  position: fixed;              /* ✅ menempel di viewport */
+  top: 24px;                    /* ✅ jarak dari atas halaman */
+  left: 24px;                   /* ✅ jarak dari tepi kiri halaman */
+  z-index: 9999;                /* ✅ di atas semua elemen (termasuk hero) */
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  background: #ffffff;
+  backdrop-filter: blur(6px);
+  color: var(--primary-dark);
+
+  border: 1.5px solid var(--border-color);
+  border-radius: 12px;
+
+  padding: 10px 20px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  font-family: inherit;
+
+  cursor: pointer;
+  transition: all 0.25s ease;
+
+  box-shadow: 0 6px 20px rgba(52, 152, 219, 0.15);
+}
+
+.back-button:hover {
+  background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+  color: #ffffff;
+  border-color: transparent;
+  transform: translateX(-4px);
+  box-shadow: 0 10px 28px rgba(52, 152, 219, 0.40);
+}
+
+.back-button:active {
+  transform: translateX(-2px) scale(0.98);
+}
+
+.back-button svg {
+  font-size: 0.9rem;
+  transition: transform 0.25s ease;
+}
+
+.back-button:hover svg {
+  transform: translateX(-3px);
+}
+
+/* ============================================
+   HERO ANIMAL ICONS
+   ============================================ */
+.hero-animal-icons {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  font-size: 2.8rem;
+  margin-bottom: 20px;
+  color: rgba(255, 255, 255, 0.9);
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.15));
+}
+
+.hero-animal-icons span {
+  transition: var(--transition);
+  display: inline-block;
+}
+
+.hero-animal-icons span:hover {
+  transform: scale(1.2) rotate(6deg);
+}
+
+.hero-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(4px);
+  padding: 8px 22px;
+  border-radius: 40px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.hero-content h1 {
+  font-size: clamp(2.6rem, 7vw, 4rem);
+  font-weight: 700;
+  line-height: 1.15;
+  margin: 0 0 16px;
+}
+
+.hero-content h1 strong {
+  font-weight: 800;
+  background: linear-gradient(to right, #F9E79F, #F4D03F);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+  opacity: 0.95;
+  max-width: 520px;
+  margin: 0 auto;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+/* ---------- CONTENT SECTION ---------- */
+.adoption-content {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+  position: relative;
+  z-index: 3;
+  margin-top: -30px;
+}
+
+/* ---------- HEADING + SEARCH BAR ---------- */
+.adoption-heading {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 20px;
+  background: #ffffff;
+  padding: 24px 28px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  margin-bottom: 40px;
+}
+
+.adoption-heading > div small {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--primary);
+  margin-bottom: 4px;
+}
+
+.adoption-heading > div h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 0 0 4px;
+  line-height: 1.2;
+}
+
+.adoption-heading > div p {
+  color: var(--text-muted);
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+/* ============================================
+   SEARCH BAR
+   ============================================ */
+.adoption-search {
+  display: flex;
+  align-items: center;
+  background: var(--primary-bg);
+  border-radius: 40px;
+  padding: 0 16px;
+  border: 2px solid transparent;
+  transition: var(--transition);
+  min-width: 200px;
+  flex: 0 1 260px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.02);
+  height: 44px;
+}
+
+.adoption-search:focus-within {
+  border-color: var(--primary);
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.12), inset 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.adoption-search svg {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+.adoption-search input {
+  border: none;
+  background: transparent;
+  padding: 10px 0;
+  font-size: 0.85rem;
+  width: 100%;
+  outline: none;
+  color: var(--text-dark);
+  font-weight: 500;
+}
+
+.adoption-search input::placeholder {
+  color: #A0B3C4;
+  font-weight: 400;
+  font-size: 0.8rem;
+}
+
+/* ---------- STATE MESSAGES ---------- */
+.adoption-state {
+  text-align: center;
+  padding: 70px 24px;
+  background: #ffffff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  margin: 20px 0;
+}
+
+.adoption-state .loading-paw {
+  display: inline-block;
+  animation: pulsePaw 1.2s ease-in-out infinite;
+  font-size: 3.2rem;
+  color: var(--primary-light);
+}
+
+@keyframes pulsePaw {
+  0% { transform: scale(1) rotate(0deg); opacity: 0.6; }
+  50% { transform: scale(1.15) rotate(8deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 0.6; }
+}
+
+.adoption-state h3 {
+  font-size: 1.5rem;
+  margin: 24px 0 10px;
+  color: var(--text-dark);
+}
+
+.adoption-state p {
+  color: var(--text-muted);
+  max-width: 420px;
+  margin: 0 auto 28px;
+  font-size: 1rem;
+}
+
+.adoption-state.error-state svg {
+  color: #E74C3C;
+  font-size: 3.2rem;
+}
+
+.adoption-state button {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  padding: 12px 36px;
+  border-radius: 60px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.25);
+}
+
+.adoption-state button:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* ---------- GRID LAYOUT ---------- */
+.adoption-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 32px;
+  margin-top: 16px;
+}
+
+/* ---------- CARD ---------- */
+.adoption-card {
+  background: #ffffff;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(0, 0, 0, 0.02);
+  height: 100%;
+}
+
+.adoption-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-md);
+  border-color: rgba(52, 152, 219, 0.15);
+}
+
+/* ---- IMAGE ---- */
+.adoption-image {
+  position: relative;
+  height: 230px;
+  background: #E9EDF2;
+  overflow: hidden;
+}
+
+.adoption-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.adoption-card:hover .adoption-image img {
+  transform: scale(1.05);
+}
+
+.image-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background: #EEF2F6;
+  color: #B0C4D8;
+  font-size: 4rem;
+}
+
+/* ---- STATUS BADGE ---- */
+.adoption-image .available,
+.adoption-image .not-available {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  padding: 6px 18px;
+  border-radius: 40px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #fff;
+}
+
+.adoption-image .available {
+  background: rgba(46, 134, 193, 0.9);
+}
+
+.adoption-image .not-available {
+  background: rgba(231, 76, 60, 0.9);
+}
+
+/* ---- BODY ---- */
+.adoption-body {
+  padding: 22px 24px 28px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.adoption-type {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--primary);
+  background: #E3F0FA;
+  padding: 5px 16px;
+  border-radius: 40px;
+  align-self: flex-start;
+  margin-bottom: 14px;
+}
+
+.adoption-body h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 0 0 8px;
+  color: var(--text-dark);
+}
+
+.adoption-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+.adoption-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.adoption-meta svg {
+  font-size: 0.95rem;
+  color: var(--primary-light);
+}
+
+.adoption-description {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin: 0 0 20px;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ---- BUTTON ---- */
+.adoption-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  padding: 14px 24px;
+  border-radius: 60px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: var(--transition);
+  width: 100%;
+  margin-top: auto;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.15);
+}
+
+.adoption-button:hover:not(:disabled) {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(52, 152, 219, 0.25);
+}
+
+.adoption-button:disabled {
+  background: #CBD5E1;
+  color: #94A3B8;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.adoption-button svg {
+  font-size: 1rem;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 1024px) {
+  .adoption-grid {
+    gap: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .adoption-hero {
+    padding: 60px 16px 50px;
+  }
+
+  .hero-content h1 {
+    font-size: 2.4rem;
+  }
+
+  .hero-content p {
+    font-size: 1rem;
+  }
+
+  .adoption-heading {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 20px 18px;
+  }
+
+  .adoption-heading > div h2 {
+    font-size: 1.5rem;
+  }
+
+  .adoption-search {
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: unset;
+    height: 42px;
+  }
+
+  .adoption-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+  }
+
+  .adoption-image {
+    height: 190px;
+  }
+
+  .notification-banner {
+    min-width: auto;
+    width: 90%;
+    padding: 14px 20px;
+    font-size: 0.85rem;
+    border-radius: 30px;
+    top: 16px;
+  }
+
+  .hero-animal-icons {
+    font-size: 2rem;
+    gap: 16px;
+  }
+
+  /* ✅ Tombol kembali lebih kecil di tablet */
+  .back-button-container {
+    top: 16px;
+    left: 16px;
+  }
+
+  .back-button {
+    padding: 8px 16px;
+    font-size: 0.78rem;
+    gap: 6px;
+  }
+
+  .back-button svg {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .adoption-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .adoption-hero h1 {
+    font-size: 2rem;
+  }
+
+  .adoption-body h3 {
+    font-size: 1.1rem;
+  }
+
+  .adoption-body {
+    padding: 18px 18px 22px;
+  }
+
+  .adoption-button {
+    padding: 12px 20px;
+    font-size: 0.85rem;
+  }
+
+  .hero-animal-icons {
+    font-size: 1.6rem;
+    gap: 12px;
+  }
+
+  .hero-label {
+    font-size: 0.65rem;
+    padding: 6px 16px;
+  }
+
+  .adoption-heading {
+    padding: 16px 14px;
+  }
+
+  .adoption-heading > div h2 {
+    font-size: 1.3rem;
+  }
+
+  .adoption-search {
+    height: 38px;
+    padding: 0 12px;
+  }
+
+  .adoption-search input {
+    font-size: 0.8rem;
+    padding: 8px 0;
+  }
+
+  .adoption-search svg {
+    font-size: 0.85rem;
+    margin-right: 8px;
+  }
+
+  /* ✅ Tombol kembali lebih kecil di HP */
+  .back-button-container {
+    top: 12px;
+    left: 12px;
+  }
+
+  .back-button {
+    padding: 6px 14px;
+    font-size: 0.72rem;
+    gap: 5px;
+  }
+
+  .back-button svg {
+    font-size: 0.75rem;
+  }
+}
+
+/* ---------- A11Y / UTILITY ---------- */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--primary-dark);
+  outline-offset: 2px;
+}
