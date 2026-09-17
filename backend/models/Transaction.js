@@ -10,7 +10,7 @@ const Transaction = sequelize.define(
       primaryKey: true,
     },
     items: {
-      type: DataTypes.TEXT,
+      type: DataTypes.TEXT, // Menyimpan JSON string dari array items
       allowNull: false,
     },
     total: {
@@ -59,6 +59,18 @@ const Transaction = sequelize.define(
     time: DataTypes.STRING,
     quantity: DataTypes.INTEGER,
     price: DataTypes.DECIMAL(10, 2),
+    
+    // ==========================================
+    // TAMBAHKAN 2 FIELD INI (PENYEBAB UTAMA!)
+    // ==========================================
+    courier: {
+      type: DataTypes.STRING,
+      defaultValue: "",
+    },
+    trackingNumber: {
+      type: DataTypes.STRING,
+      defaultValue: "",
+    },
   },
   {
     timestamps: true,

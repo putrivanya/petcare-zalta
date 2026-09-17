@@ -418,3 +418,45 @@
     height: 40px;
   }
 }
+/* Styling untuk dropdown kurir */
+.courier-select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  background-color: #f9f9f9;
+  cursor: pointer;
+}
+
+.shipping-info {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #27ae60;
+  background: #eafaf1;
+  padding: 8px 12px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+/* Styling untuk rincian biaya di ringkasan */
+.summary-cost {
+  margin: 15px 0;
+  font-size: 14px;
+}
+
+.cost-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  color: #555;
+}
+
+.checkout-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 18px;
+  color: #333;
+  margin-top: 10px;
+}

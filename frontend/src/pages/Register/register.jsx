@@ -169,7 +169,7 @@ function Register() {
                 <FaPaw />
               </div>
               <div className="mobile-brand-text">
-                <h1>PetCare</h1>
+                <h1>PetCare Zalta</h1>
                 <p>Sahabat Hewan</p>
               </div>
             </div>
@@ -188,7 +188,7 @@ function Register() {
                   <input
                     id="nama"
                     type="text"
-                    placeholder="Masukkan nama lengkap"
+                    placeholder=" Masukkan nama lengkap"
                     value={nama}
                     onChange={(e) => setNama(e.target.value)}
                     required
@@ -204,7 +204,7 @@ function Register() {
                   <input
                     id="email"
                     type="email"
-                    placeholder="Masukkan email"
+                    placeholder=" Masukkan email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -220,7 +220,7 @@ function Register() {
                   <input
                     id="password"
                     type="password"
-                    placeholder="Minimal 6 karakter"
+                    placeholder=" Minimal 6 karakter"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     minLength={6}
@@ -237,7 +237,7 @@ function Register() {
                   <input
                     id="noTelpon"
                     type="tel"
-                    placeholder="Contoh: 081234567890"
+                    placeholder=" Contoh: 081234567890"
                     value={noTelpon}
                     onChange={(e) => setNoTelpon(e.target.value)}
                     inputMode="tel"
@@ -253,7 +253,7 @@ function Register() {
                   <span className="input-icon"><FaMapMarkerAlt /></span>
                   <textarea
                     id="alamat"
-                    placeholder="Jl. Merdeka No. 10, Kota Bandung, 40123"
+                    placeholder=" Jl. Merdeka No. 10, Kota Bandung, 40123"
                     value={alamat}
                     onChange={(e) => setAlamat(e.target.value)}
                     rows={2}
@@ -287,7 +287,7 @@ function Register() {
             {/* Brand kecil */}
             <div className="hero-brand">
               <div className="paw-logo"><FaPaw /></div>
-              <h1>PetCare</h1>
+              <h1> PetCare Zalta</h1>
             </div>
 
             {/* Ilustrasi */}

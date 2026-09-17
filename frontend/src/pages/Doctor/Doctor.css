@@ -811,3 +811,343 @@
     font-size: 13px;
   }
 }
+/* =====================================================
+   MODAL KONSULTASI
+===================================================== */
+.doctor-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.doctor-modal {
+  position: relative;
+  z-index: 100000;
+  background: #fff;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 92vh;
+  overflow-y: auto;
+  padding: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.doctor-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.doctor-modal-header small {
+  color: #7c3aed;
+  font-weight: 700;
+  letter-spacing: 1px;
+  font-size: 11px;
+}
+
+.doctor-modal-header h2 {
+  font-size: 20px;
+  color: #111827;
+  margin: 4px 0 2px;
+}
+
+.modal-spec {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.doctor-consult-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.doctor-consult-form .form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.doctor-consult-form label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.doctor-consult-form .required {
+  color: #ef4444;
+}
+
+.doctor-consult-form input,
+.doctor-consult-form textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #111827;
+  background: #fff;
+  outline: none;
+  font-family: inherit;
+  box-sizing: border-box;
+  pointer-events: auto;
+}
+
+.doctor-consult-form input:focus,
+.doctor-consult-form textarea:focus {
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
+
+.consult-info-box {
+  display: flex;
+  gap: 10px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  padding: 12px 14px;
+  border-radius: 10px;
+  color: #1e40af;
+}
+
+.consult-info-box svg {
+  font-size: 18px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.consult-info-box strong {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 2px;
+}
+
+.consult-info-box p {
+  font-size: 12px;
+  margin: 0;
+}
+
+/* =====================================================
+   RIWAYAT PENGOBATAN
+===================================================== */
+.consultation-section {
+  margin-top: 60px;
+}
+
+.consultation-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.consultation-heading small {
+  color: #7c3aed;
+  font-weight: 700;
+  letter-spacing: 1px;
+  font-size: 12px;
+}
+
+.consultation-heading h2 {
+  font-size: 24px;
+  margin: 4px 0 6px;
+  color: #111827;
+}
+
+.consultation-heading p {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.refresh-consultation {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  color: #374151;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.refresh-consultation:hover {
+  background: #f9fafb;
+}
+
+.consultation-empty {
+  text-align: center;
+  padding: 40px;
+  background: #fff;
+  border-radius: 16px;
+  color: #6b7280;
+}
+
+.consultation-empty svg {
+  font-size: 42px;
+  color: #7c3aed;
+  margin-bottom: 12px;
+}
+
+.consultation-empty h3 {
+  color: #111827;
+  margin-bottom: 4px;
+}
+
+.consultation-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 20px;
+}
+
+.consultation-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border-left: 4px solid #7c3aed;
+}
+
+.consultation-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.consultation-top small {
+  color: #9ca3af;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.consultation-top h3 {
+  font-size: 16px;
+  color: #111827;
+  margin: 4px 0 2px;
+}
+
+.consult-spec {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.consult-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-menunggu {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-dijawab {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.status-selesai {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.consultation-block {
+  padding: 12px 14px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  background: #f9fafb;
+}
+
+.consultation-block.reply {
+  background: #ecfdf5;
+  border-left: 3px solid #10b981;
+}
+
+.consultation-block.waiting {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 13px;
+}
+
+.consultation-block strong {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+.consultation-block.reply strong {
+  color: #065f46;
+}
+
+.consultation-block p {
+  font-size: 13px;
+  color: #111827;
+  line-height: 1.5;
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.consultation-meta {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 11px;
+  color: #9ca3af;
+  padding-top: 8px;
+  border-top: 1px solid #f3f4f6;
+  margin-top: 10px;
+}
+
+.wa-followup-btn {
+  width: 100%;
+  margin-top: 12px;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #25d366, #128c7e);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.wa-followup-btn:hover {
+  opacity: 0.9;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .consultation-list {
+    grid-template-columns: 1fr;
+  }
+}

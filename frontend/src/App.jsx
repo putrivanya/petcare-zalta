@@ -13,7 +13,9 @@ import UserPage from "./components/UserPage";
 
 import Home from "./pages/User/Home";
 import Login from "./pages/Login/Login";
+// PERBAIKAN: Mengubah "egister" menjadi "register"
 import Register from "./pages/Register/register";
+import TrackOrder from "./pages/TrackOrder/TrackOrder"; 
 
 // =====================================================
 // USER / PELANGGAN
@@ -151,6 +153,22 @@ function App() {
             <ProtectedRoute role="pelanggan">
               <UserPage>
                 <Checkout />
+              </UserPage>
+            </ProtectedRoute>
+          }
+        />
+
+
+        {/* ==================================================
+            TRACK ORDER (LACAK PESANAN) --- RUTE BARU
+        ================================================== */}
+
+        <Route
+          path="/track-order/:id"
+          element={
+            <ProtectedRoute role="pelanggan">
+              <UserPage>
+                <TrackOrder />
               </UserPage>
             </ProtectedRoute>
           }

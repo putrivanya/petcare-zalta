@@ -1466,3 +1466,23 @@
     padding: 24px 20px;
   }
 }
+/* Styling Tombol Lacak */
+.btn-track {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #3b82f6; /* Biru tema */
+  color: white;
+  padding: 8px 14px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: background 0.2s;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-track:hover {
+  background-color: #2563eb; /* Biru lebih gelap */
+}

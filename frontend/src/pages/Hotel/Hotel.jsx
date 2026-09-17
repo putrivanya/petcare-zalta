@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import {
   FaHotel,
@@ -10,10 +11,12 @@ import {
   FaUser,
   FaPhone,
   FaTimes,
-  FaCreditCard,
   FaStar,
   FaClock,
   FaClipboardCheck,
+  FaMapMarkerAlt,
+  FaInfoCircle,
+  FaArrowLeft,
 } from "react-icons/fa";
 
 import api from "../../services/api";
@@ -21,24 +24,38 @@ import "./Hotel.css";
 
 const SERVER_URL = "http://localhost:5000";
 
-const Hotel = () => {
-  const [hotels, setHotels] = useState([]);
+// =====================================================
+// HITUNG JUMLAH MALAM
+// =====================================================
+const hitungMalam = (checkIn, checkOut) => {
+  if (!checkIn || !checkOut) return 0;
+  const start = new Date(checkIn);
+  const end = new Date(checkOut);
+  const diff = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+  return diff > 0 ? diff : 0;
+};
 
+const Hotel = () => {
+  const navigate = useNavigate();
+
+  const [hotels, setHotels] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
   const [search, setSearch] = useState("");
 
   // MODAL BOOKING
   const [showBooking, setShowBooking] = useState(false);
   const [selectedHotel, setSelectedHotel] = useState(null);
 
+  // STATE BOOKING FORM
   const [bookingForm, setBookingForm] = useState({
     petName: "",
     petType: "",
-    date: "",
+    checkIn: "",
+    checkOut: "",
     quantity: 1,
     phone: "",
+    address: "",
     note: "",
   });
 
@@ -48,34 +65,19 @@ const Hotel = () => {
   const [myBookings, setMyBookings] = useState([]);
   const [bookingLoadingList, setBookingLoadingList] = useState(false);
 
-  // PAYMENT MODAL
-  const [showPayment, setShowPayment] = useState(false);
-  const [selectedBooking, setSelectedBooking] = useState(null);
-
-  const [paymentForm, setPaymentForm] = useState({
-    method: "Transfer Bank",
-    proof: null,
-  });
-
   // REVIEW MODAL
   const [showReview, setShowReview] = useState(false);
-
-  const [reviewForm, setReviewForm] = useState({
-    rating: 5,
-    review: "",
-  });
+  const [selectedBooking, setSelectedBooking] = useState(null);
+  const [reviewForm, setReviewForm] = useState({ rating: 5, review: "" });
 
   // =====================================================
   // GET HOTEL
   // =====================================================
-
   const getHotels = async () => {
     try {
       setLoading(true);
       setError("");
-
       const response = await api.get("/hotels");
-
       setHotels(
         Array.isArray(response.data?.data)
           ? response.data.data
@@ -85,7 +87,6 @@ const Hotel = () => {
       );
     } catch (err) {
       console.error("GET HOTEL ERROR:", err);
-
       setError("Data pet hotel gagal dimuat.");
     } finally {
       setLoading(false);
@@ -93,72 +94,86 @@ const Hotel = () => {
   };
 
   // =====================================================
-  // GET USER
+  // USER HELPERS
   // =====================================================
-
   const getUser = () => {
     try {
-      const user = JSON.parse(localStorage.getItem("user"));
-
-      return user || null;
+      const raw = localStorage.getItem("user");
+      if (!raw) return null;
+      return JSON.parse(raw) || null;
     } catch (error) {
       console.error("USER ERROR:", error);
-
       return null;
     }
   };
 
-  // =====================================================
-  // GET ID USER
-  // =====================================================
-
   const getUserId = () => {
     const user = getUser();
-
     if (!user) return null;
+    const id =
+      user.id ??
+      user.Id_user ??
+      user.Id_client ??
+      user.id_client ??
+      user.userId ??
+      user.user_id ??
+      null;
+    return id;
+  };
 
+  const getUserEmail = () => {
+    const user = getUser();
+    if (!user) return "";
+    return user.email || user.Email || user.email_user || "";
+  };
+
+  const getUserPhone = (user) => {
+    if (!user) return "";
     return (
-      user.id ||
-      user.Id_user ||
-      user.Id_client ||
-      user.id_client ||
-      user.userId
+      user.no_telpon ||
+      user.noTelpon ||
+      user.phone ||
+      user.no_hp ||
+      user.noHP ||
+      user.phoneNumber ||
+      user.telepon ||
+      ""
+    );
+  };
+
+  const getUserAddress = (user) => {
+    if (!user) return "";
+    return (
+      user.alamat ||
+      user.address ||
+      user.alamat_lengkap ||
+      user.alamatLengkap ||
+      ""
     );
   };
 
   // =====================================================
-  // GET BOOKING USER
+  // GET MY BOOKINGS
   // =====================================================
-
   const getMyBookings = async () => {
     const userId = getUserId();
+    const email = getUserEmail();
 
-    if (!userId) {
+    if (!userId && !email) {
       setMyBookings([]);
       return;
     }
 
     try {
       setBookingLoadingList(true);
-
-      /*
-       * Endpoint ini disesuaikan dengan sistem transaksi
-       * Dashboard Admin kamu.
-       */
-      const response = await api.get(
-        `/transactions/user/${userId}`
-      );
-
+      const url = `/transactions/user/${userId || 0}?email=${encodeURIComponent(
+        email
+      )}`;
+      const response = await api.get(url);
       const data = response.data?.data || response.data;
-
       setMyBookings(Array.isArray(data) ? data : []);
     } catch (error) {
-      console.error("GET MY BOOKINGS ERROR:", error);
-
-      /*
-       * Jangan bikin halaman hotel rusak hanya karena
-       * endpoint booking belum tersedia.
-       */
+      console.error("GET MY BOOKINGS ERROR:", error.response?.data || error);
       setMyBookings([]);
     } finally {
       setBookingLoadingList(false);
@@ -168,51 +183,36 @@ const Hotel = () => {
   // =====================================================
   // LOAD DATA
   // =====================================================
-
   useEffect(() => {
     getHotels();
     getMyBookings();
 
-    /*
-     * Cek status booking setiap 5 detik.
-     * Jadi ketika admin menekan KONFIRMASI,
-     * user tidak harus refresh manual.
-     */
+    // Jangan polling saat modal terbuka
+    if (showBooking || showReview) return;
+
     const interval = setInterval(() => {
       getMyBookings();
-    }, 5000);
+    }, 10000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [showBooking, showReview]);
 
   // =====================================================
   // IMAGE
   // =====================================================
-
   const getImage = (image) => {
     if (!image) return "";
-
-    if (
-      image.startsWith("http://") ||
-      image.startsWith("https://")
-    ) {
+    if (image.startsWith("http://") || image.startsWith("https://"))
       return image;
-    }
-
-    if (image.startsWith("/")) {
-      return `${SERVER_URL}${image}`;
-    }
-
+    if (image.startsWith("/")) return `${SERVER_URL}${image}`;
     return `${SERVER_URL}/${image}`;
   };
 
   // =====================================================
   // SEARCH
   // =====================================================
-
   const filtered = hotels.filter((hotel) => {
     const keyword = search.toLowerCase().trim();
-
     return (
       !keyword ||
       hotel.name?.toLowerCase().includes(keyword) ||
@@ -224,80 +224,97 @@ const Hotel = () => {
   // =====================================================
   // OPEN BOOKING
   // =====================================================
-
   const openBooking = (hotel) => {
     const user = getUser();
-
     if (!user) {
       alert("Silakan login terlebih dahulu untuk melakukan booking.");
       return;
     }
 
     setSelectedHotel(hotel);
-
     setBookingForm({
       petName: "",
       petType: hotel.animal || "",
-      date: "",
+      checkIn: "",
+      checkOut: "",
       quantity: 1,
-      phone: user.phone || user.no_hp || user.phoneNumber || "",
+      phone: getUserPhone(user),
+      address: getUserAddress(user),
       note: "",
     });
-
     setShowBooking(true);
   };
 
-  // =====================================================
-  // CLOSE BOOKING
-  // =====================================================
-
   const closeBooking = () => {
     if (bookingLoading) return;
-
     setShowBooking(false);
     setSelectedHotel(null);
   };
 
   // =====================================================
-  // CHANGE BOOKING
+  // CHANGE HANDLERS
   // =====================================================
-
   const handleBookingChange = (e) => {
     const { name, value } = e.target;
+    setBookingForm((prev) => ({ ...prev, [name]: value }));
+  };
 
-    setBookingForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+  const handleDateChange = (e) => {
+    const { name, value } = e.target;
+    setBookingForm((prev) => {
+      const updated = { ...prev, [name]: value };
+
+      if (
+        updated.checkIn &&
+        updated.checkOut &&
+        new Date(updated.checkOut) <= new Date(updated.checkIn)
+      ) {
+        updated.checkOut = "";
+      }
+
+      const malam = hitungMalam(updated.checkIn, updated.checkOut);
+      updated.quantity = malam > 0 ? malam : 1;
+
+      return updated;
+    });
   };
 
   // =====================================================
   // SUBMIT BOOKING
   // =====================================================
-
   const submitBooking = async (e) => {
     e.preventDefault();
 
     const user = getUser();
     const userId = getUserId();
+    const userEmail = getUserEmail();
 
     if (!user || !userId) {
       alert("Session login tidak ditemukan. Silakan login kembali.");
       return;
     }
-
     if (!selectedHotel) {
       alert("Hotel belum dipilih.");
       return;
     }
-
     if (!bookingForm.petName.trim()) {
       alert("Nama hewan wajib diisi.");
       return;
     }
-
-    if (!bookingForm.date) {
-      alert("Tanggal booking wajib dipilih.");
+    if (!bookingForm.checkIn || !bookingForm.checkOut) {
+      alert("Tanggal check-in & check-out wajib diisi.");
+      return;
+    }
+    if (new Date(bookingForm.checkOut) <= new Date(bookingForm.checkIn)) {
+      alert("Tanggal check-out harus setelah check-in.");
+      return;
+    }
+    if (!bookingForm.phone.trim()) {
+      alert("Nomor telepon wajib diisi.");
+      return;
+    }
+    if (!bookingForm.address.trim()) {
+      alert("Alamat wajib diisi.");
       return;
     }
 
@@ -305,107 +322,82 @@ const Hotel = () => {
       setBookingLoading(true);
 
       const price = Number(selectedHotel.price || 0);
-
-      const quantity = Number(
-        bookingForm.quantity || 1
-      );
-
+      const quantity = Number(bookingForm.quantity || 1);
       const total = price * quantity;
 
-      /*
-       * Data dikirim ke /transactions
-       * karena Dashboard Admin kamu membaca:
-       *
-       * GET /transactions
-       *
-       * dan mengubah status melalui:
-       *
-       * PUT /transactions/:id/status
-       */
-
-      const payload = {
-        userId: userId,
-
-        userName:
-          user.nama ||
-          user.name ||
-          user.username ||
-          "User",
-
-        userEmail:
-          user.email ||
-          user.Email ||
-          "",
-
+      const itemData = {
+        name: selectedHotel.name,
         itemName: selectedHotel.name,
-
-        serviceName: selectedHotel.name,
-
         type: "hotel",
-
-        hotelId:
-          selectedHotel.id ||
-          selectedHotel._id,
-
+        hotelId: selectedHotel.id || selectedHotel._id,
         petName: bookingForm.petName,
-
         petType:
-          bookingForm.petType ||
-          selectedHotel.animal ||
-          "Semua Hewan",
-
-        date: bookingForm.date,
-
+          bookingForm.petType || selectedHotel.animal || "Semua Hewan",
+        checkIn: bookingForm.checkIn,
+        checkOut: bookingForm.checkOut,
         quantity: quantity,
-
         price: price,
-
-        total: total,
-
-        phone: bookingForm.phone,
-
-        note: bookingForm.note,
-
-        status: "menunggu",
-
-        paymentStatus: "belum_bayar",
+        subtotal: total,
+        notes: bookingForm.note,
       };
 
-      const response = await api.post(
-        "/transactions",
-        payload
-      );
+      const payload = {
+        items: [itemData],
+        total: total,
+        address: bookingForm.address,
+        phone: bookingForm.phone,
 
-      console.log(
-        "BOOKING BERHASIL:",
-        response.data
-      );
+        paymentMethod: "COD",
+        paymentStatus: "belum_bayar",
+        notes: bookingForm.note,
+
+        userId: userId,
+        userName: user.nama || user.name || user.username || "User",
+        userEmail: userEmail,
+        userPhone: bookingForm.phone,
+
+        itemName: selectedHotel.name,
+        type: "hotel",
+        date: bookingForm.checkIn,
+        time: new Date().toLocaleTimeString("id-ID", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+        quantity: quantity,
+        price: price,
+
+        hotelId: selectedHotel.id || selectedHotel._id,
+        petName: bookingForm.petName,
+        petType:
+          bookingForm.petType || selectedHotel.animal || "Semua Hewan",
+        checkIn: bookingForm.checkIn,
+        checkOut: bookingForm.checkOut,
+      };
+
+      await api.post("/transactions", payload);
 
       alert(
         "Booking berhasil dikirim!\n\n" +
-        "Silakan tunggu konfirmasi dari admin."
+          "Silakan tunggu konfirmasi dari admin.\n" +
+          "Pembayaran dilakukan di tempat (COD)."
       );
 
       setShowBooking(false);
-
       setSelectedHotel(null);
-
       setBookingForm({
         petName: "",
         petType: "",
-        date: "",
+        checkIn: "",
+        checkOut: "",
         quantity: 1,
         phone: "",
+        address: "",
         note: "",
       });
 
-      await getMyBookings();
+      setTimeout(() => getMyBookings(), 500);
     } catch (error) {
-      console.error(
-        "BOOKING ERROR:",
-        error.response?.data || error
-      );
-
+      console.error("BOOKING ERROR:", error.response?.data || error);
       alert(
         error.response?.data?.message ||
           "Booking gagal dikirim. Periksa koneksi server."
@@ -416,135 +408,16 @@ const Hotel = () => {
   };
 
   // =====================================================
-  // OPEN PAYMENT
+  // REVIEW
   // =====================================================
-
-  const openPayment = (booking) => {
-    setSelectedBooking(booking);
-
-    setPaymentForm({
-      method: "Transfer Bank",
-      proof: null,
-    });
-
-    setShowPayment(true);
-  };
-
-  // =====================================================
-  // PAYMENT CHANGE
-  // =====================================================
-
-  const handlePaymentChange = (e) => {
-    const { name, value, files } = e.target;
-
-    if (name === "proof") {
-      setPaymentForm((prev) => ({
-        ...prev,
-        proof: files?.[0] || null,
-      }));
-
-      return;
-    }
-
-    setPaymentForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  // =====================================================
-  // SUBMIT PAYMENT
-  // =====================================================
-
-  const submitPayment = async (e) => {
-    e.preventDefault();
-
-    if (!selectedBooking) return;
-
-    try {
-      const formData = new FormData();
-
-      formData.append(
-        "paymentStatus",
-        "menunggu_verifikasi"
-      );
-
-      formData.append(
-        "paymentMethod",
-        paymentForm.method
-      );
-
-      if (paymentForm.proof) {
-        formData.append(
-          "proof",
-          paymentForm.proof
-        );
-      }
-
-      /*
-       * Backend admin kamu memakai:
-       *
-       * PUT /transactions/:id/payment
-       */
-
-      const response = await api.put(
-        `/transactions/${
-          selectedBooking.id ||
-          selectedBooking._id
-        }/payment`,
-        formData
-      );
-
-      console.log(
-        "PAYMENT RESPONSE:",
-        response.data
-      );
-
-      alert(
-        "Pembayaran berhasil dikirim.\n\n" +
-        "Admin akan memverifikasi pembayaran."
-      );
-
-      setShowPayment(false);
-
-      setSelectedBooking(null);
-
-      await getMyBookings();
-    } catch (error) {
-      console.error(
-        "PAYMENT ERROR:",
-        error.response?.data || error
-      );
-
-      alert(
-        error.response?.data?.message ||
-          "Pembayaran gagal dikirim."
-      );
-    }
-  };
-
-  // =====================================================
-  // OPEN REVIEW
-  // =====================================================
-
   const openReview = (booking) => {
     setSelectedBooking(booking);
-
-    setReviewForm({
-      rating: 5,
-      review: "",
-    });
-
+    setReviewForm({ rating: 5, review: "" });
     setShowReview(true);
   };
 
-  // =====================================================
-  // SUBMIT REVIEW
-  // =====================================================
-
   const submitReview = async (e) => {
     e.preventDefault();
-
     if (!selectedBooking) return;
 
     const user = getUser();
@@ -553,1502 +426,686 @@ const Hotel = () => {
     try {
       const payload = {
         userId: userId,
-
-        userName:
-          user?.nama ||
-          user?.name ||
-          "User",
-
-        transactionId:
-          selectedBooking.id ||
-          selectedBooking._id,
-
-        bookingId:
-          selectedBooking.id ||
-          selectedBooking._id,
-
-        rating: Number(
-          reviewForm.rating
-        ),
-
-        review:
-          reviewForm.review,
+        userName: user?.nama || user?.name || "User",
+        transactionId: selectedBooking.id || selectedBooking._id,
+        bookingId: selectedBooking.id || selectedBooking._id,
+        rating: Number(reviewForm.rating),
+        review: reviewForm.review,
       };
 
-      const response = await api.post(
-        "/reviews",
-        payload
-      );
-
-      console.log(
-        "REVIEW RESPONSE:",
-        response.data
-      );
-
-      alert(
-        "Review berhasil dikirim. Terima kasih."
-      );
+      await api.post("/reviews", payload);
+      alert("Review berhasil dikirim. Terima kasih.");
 
       setShowReview(false);
-
       setSelectedBooking(null);
-
-      setReviewForm({
-        rating: 5,
-        review: "",
-      });
+      setReviewForm({ rating: 5, review: "" });
     } catch (error) {
-      console.error(
-        "REVIEW ERROR:",
-        error.response?.data || error
-      );
-
-      alert(
-        error.response?.data?.message ||
-          "Review gagal dikirim."
-      );
+      console.error("REVIEW ERROR:", error.response?.data || error);
+      alert(error.response?.data?.message || "Review gagal dikirim.");
     }
   };
 
   // =====================================================
   // FORMAT STATUS
   // =====================================================
-
   const getStatusLabel = (status) => {
     switch (status) {
       case "menunggu":
         return "Menunggu Konfirmasi";
-
+      case "dikemas":
       case "dikonfirmasi":
         return "Booking Dikonfirmasi";
-
+      case "dikirim":
+        return "Sedang Berlangsung";
       case "ditolak":
         return "Booking Ditolak";
-
+      case "dibatalkan":
+        return "Dibatalkan";
       case "selesai":
         return "Selesai";
-
       default:
         return status || "Menunggu";
     }
   };
 
-  // =====================================================
-  // STATUS CLASS
-  // =====================================================
-
   const getStatusClass = (status) => {
     switch (status) {
+      case "dikemas":
       case "dikonfirmasi":
+      case "dikirim":
         return "status-confirmed";
-
       case "ditolak":
+      case "dibatalkan":
         return "status-rejected";
-
       case "selesai":
         return "status-finished";
-
       default:
         return "status-pending";
     }
   };
 
-  // =====================================================
-  // PAYMENT STATUS
-  // =====================================================
-
   const getPaymentLabel = (status) => {
     switch (status) {
       case "belum_bayar":
-        return "Belum Bayar";
-
+        return "Belum Dibayar (COD)";
       case "menunggu_verifikasi":
         return "Menunggu Verifikasi";
-
       case "dibayar":
-        return "Pembayaran Terverifikasi";
-
+        return "Sudah Dibayar";
       default:
-        return status || "Belum Bayar";
+        return status || "Belum Dibayar (COD)";
+    }
+  };
+
+  const formatTanggal = (tgl) => {
+    if (!tgl) return "-";
+    try {
+      const d = new Date(tgl);
+      if (isNaN(d.getTime())) return tgl;
+      return d.toLocaleDateString("id-ID", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      });
+    } catch {
+      return tgl;
     }
   };
 
   // =====================================================
   // RENDER
   // =====================================================
-
   return (
     <div className="hotel-page">
-
-      {/* =================================================
-          HERO
-      ================================================= */}
-
+      {/* HERO */}
       <section className="hotel-hero">
-
         <div className="hotel-hero-overlay"></div>
 
-        <div className="hotel-hero-content">
+        {/* TOMBOL KEMBALI */}
+        <button
+          className="hotel-back-btn"
+          onClick={() => navigate(-1)}
+          title="Kembali"
+        >
+          <FaArrowLeft />
+          <span>Kembali</span>
+        </button>
 
+        <div className="hotel-hero-content">
           <span className="hotel-label">
             <FaHotel />
             PET HOTEL
           </span>
-
           <h1>
             Tempat Nyaman
             <br />
-
-            <strong>
-              Untuk Hewan Kesayangan
-            </strong>
+            <strong>Untuk Hewan Kesayangan</strong>
           </h1>
-
           <p>
-            Tempat aman, nyaman, bersih,
-            dan terpercaya untuk hewan
-            kesayangan Anda.
+            Tempat aman, nyaman, bersih, dan terpercaya untuk hewan kesayangan
+            Anda.
           </p>
-
         </div>
-
       </section>
 
-
-      {/* =================================================
-          HOTEL CONTENT
-      ================================================= */}
-
+      {/* CONTENT */}
       <section className="hotel-content">
-
         <div className="hotel-heading">
-
           <div>
-
-            <small>
-              PET HOTEL
-            </small>
-
-            <h2>
-              Pilihan Hotel Hewan
-            </h2>
-
+            <small>PET HOTEL</small>
+            <h2>Pilihan Hotel Hewan</h2>
             <p>
-              Pilih kamar pet hotel yang
-              sesuai dengan kebutuhan hewan
+              Pilih kamar pet hotel yang sesuai dengan kebutuhan hewan
               kesayangan Anda.
             </p>
-
           </div>
 
-
           <div className="hotel-search">
-
             <FaSearch />
-
             <input
               type="text"
               placeholder="Cari hotel..."
               value={search}
-              onChange={(e) =>
-                setSearch(e.target.value)
-              }
+              onChange={(e) => setSearch(e.target.value)}
             />
-
           </div>
-
         </div>
 
-
-        {/* =================================================
-            LOADING
-        ================================================= */}
-
         {loading && (
-
           <div className="hotel-state">
-
             <div className="hotel-spinner"></div>
-
-            <p>
-              Memuat data hotel...
-            </p>
-
+            <p>Memuat data hotel...</p>
           </div>
-
         )}
-
-
-        {/* =================================================
-            ERROR
-        ================================================= */}
 
         {!loading && error && (
-
           <div className="hotel-state error">
-
             <FaHotel />
-
-            <p>
-              {error}
-            </p>
-
-            <button
-              onClick={getHotels}
-            >
-              Coba Lagi
-            </button>
-
+            <p>{error}</p>
+            <button onClick={getHotels}>Coba Lagi</button>
           </div>
-
         )}
 
+        {!loading && !error && filtered.length === 0 && (
+          <div className="hotel-state">
+            <FaHotel />
+            <h3>Belum ada hotel</h3>
+            <p>Admin belum menambahkan data pet hotel.</p>
+          </div>
+        )}
 
-        {/* =================================================
-            EMPTY
-        ================================================= */}
-
-        {!loading &&
-          !error &&
-          filtered.length === 0 && (
-
-            <div className="hotel-state">
-
-              <FaHotel />
-
-              <h3>
-                Belum ada hotel
-              </h3>
-
-              <p>
-                Admin belum menambahkan
-                data pet hotel.
-              </p>
-
-            </div>
-
-          )}
-
-
-        {/* =================================================
-            HOTEL GRID
-        ================================================= */}
-
-        {!loading &&
-          !error &&
-          filtered.length > 0 && (
-
-            <div className="hotel-grid">
-
-              {filtered.map(
-                (hotel) => (
-
-                  <article
-                    className="hotel-card"
-                    key={
-                      hotel.id ||
-                      hotel._id
-                    }
-                  >
-
-                    <div className="hotel-image">
-
-                      {hotel.image ? (
-
-                        <img
-                          src={getImage(
-                            hotel.image
-                          )}
-                          alt={
-                            hotel.name
-                          }
-                          onError={(e) => {
-                            e.currentTarget.style.display =
-                              "none";
-                          }}
-                        />
-
-                      ) : (
-
-                        <div className="hotel-no-image">
-                          <FaHotel />
-                        </div>
-
-                      )}
-
-                      <span className="hotel-image-badge">
-                        <FaCheckCircle />
-                        Terverifikasi
-                      </span>
-
+        {!loading && !error && filtered.length > 0 && (
+          <div className="hotel-grid">
+            {filtered.map((hotel) => (
+              <article className="hotel-card" key={hotel.id || hotel._id}>
+                {/* GAMBAR — TANPA BADGE "Terverifikasi" */}
+                <div className="hotel-image">
+                  {hotel.image ? (
+                    <img
+                      src={getImage(hotel.image)}
+                      alt={hotel.name}
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                      }}
+                    />
+                  ) : (
+                    <div className="hotel-no-image">
+                      <FaHotel />
                     </div>
+                  )}
+                </div>
 
+                <div className="hotel-body">
+                  <span className="hotel-animal">
+                    <FaPaw />
+                    {hotel.animal || "Semua Hewan"}
+                  </span>
 
-                    <div className="hotel-body">
+                  <h3>{hotel.name}</h3>
 
-                      <span className="hotel-animal">
+                  <p>
+                    {hotel.description ||
+                      "Tempat nyaman dan aman untuk hewan kesayangan."}
+                  </p>
 
+                  {hotel.facilities && (
+                    <div className="hotel-facilities">
+                      {hotel.facilities.split(",").map((facility, index) => (
+                        <span key={index}>
+                          <FaCheckCircle />
+                          {facility.trim()}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="hotel-meta">
+                    {hotel.capacity && (
+                      <div>
                         <FaPaw />
-
-                        {hotel.animal ||
-                          "Semua Hewan"}
-
-                      </span>
-
-
-                      <h3>
-                        {hotel.name}
-                      </h3>
-
-
-                      <p>
-                        {hotel.description ||
-                          "Tempat nyaman dan aman untuk hewan kesayangan."}
-                      </p>
-
-
-                      {hotel.facilities && (
-
-                        <div className="hotel-facilities">
-
-                          {hotel.facilities
-                            .split(",")
-                            .map(
-                              (
-                                facility,
-                                index
-                              ) => (
-
-                                <span
-                                  key={
-                                    index
-                                  }
-                                >
-
-                                  <FaCheckCircle />
-
-                                  {
-                                    facility.trim()
-                                  }
-
-                                </span>
-
-                              )
-                            )}
-
-                        </div>
-
-                      )}
-
-
-                      <div className="hotel-meta">
-
-                        {hotel.capacity && (
-
-                          <div>
-
-                            <FaPaw />
-
-                            <span>
-                              Kapasitas
-                            </span>
-
-                            <strong>
-                              {hotel.capacity}
-                            </strong>
-
-                          </div>
-
-                        )}
-
+                        <span>Kapasitas</span>
+                        <strong>{hotel.capacity}</strong>
                       </div>
+                    )}
+                  </div>
 
-
-                      {hotel.price && (
-
-                        <div className="hotel-price">
-
-                          <div>
-
-                            <FaMoneyBillWave />
-
-                            <span>
-                              Mulai dari
-                            </span>
-
-                          </div>
-
-                          <strong>
-                            Rp{" "}
-                            {Number(
-                              hotel.price
-                            ).toLocaleString(
-                              "id-ID"
-                            )}
-                          </strong>
-
-                          <small>
-                            / malam
-                          </small>
-
-                        </div>
-
-                      )}
-
-
-                      <button
-                        className="hotel-book-btn"
-                        onClick={() =>
-                          openBooking(
-                            hotel
-                          )
-                        }
-                      >
-
-                        <FaHotel />
-
-                        Booking Pet Hotel
-
-                      </button>
-
+                  {hotel.price && (
+                    <div className="hotel-price">
+                      <div>
+                        <FaMoneyBillWave />
+                        <span>Mulai dari</span>
+                      </div>
+                      <strong>
+                        Rp {Number(hotel.price).toLocaleString("id-ID")}
+                      </strong>
+                      <small>/ malam</small>
                     </div>
+                  )}
 
-                  </article>
+                  <button
+                    className="hotel-book-btn"
+                    onClick={() => openBooking(hotel)}
+                  >
+                    <FaHotel />
+                    Booking Pet Hotel
+                  </button>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
 
-                )
-              )}
-
-            </div>
-
-          )}
-
-
-        {/* =================================================
-            MY BOOKINGS
-        ================================================= */}
-
+        {/* MY BOOKINGS */}
         <section className="my-booking-section">
-
           <div className="booking-section-heading">
-
             <div>
-
-              <small>
-                BOOKING SAYA
-              </small>
-
-              <h2>
-                Riwayat Pet Hotel
-              </h2>
-
-              <p>
-                Pantau status booking,
-                pembayaran, dan review.
-              </p>
-
+              <small>BOOKING SAYA</small>
+              <h2>Riwayat Pet Hotel</h2>
+              <p>Pantau status booking dan review.</p>
             </div>
-
-            <button
-              className="refresh-booking"
-              onClick={getMyBookings}
-            >
+            <button className="refresh-booking" onClick={getMyBookings}>
               Refresh
             </button>
-
           </div>
-
 
           {bookingLoadingList ? (
-
-            <div className="booking-loading">
-              Memuat booking...
-            </div>
-
+            <div className="booking-loading">Memuat booking...</div>
           ) : myBookings.length === 0 ? (
-
             <div className="no-booking">
-
               <FaClipboardCheck />
-
-              <h3>
-                Belum ada booking
-              </h3>
-
-              <p>
-                Booking pet hotel kamu
-                akan muncul di sini.
-              </p>
-
+              <h3>Belum ada booking</h3>
+              <p>Booking pet hotel kamu akan muncul di sini.</p>
             </div>
-
           ) : (
-
             <div className="my-booking-grid">
-
-              {myBookings.map(
-                (booking) => (
-
-                  <div
-                    className="my-booking-card"
-                    key={
-                      booking.id ||
-                      booking._id
-                    }
-                  >
-
-                    <div className="my-booking-top">
-
-                      <div>
-
-                        <small>
-                          BOOKING #
-                          {
-                            booking.id ||
-                            booking._id
-                          }
-                        </small>
-
-                        <h3>
-                          {
-                            booking.itemName ||
-                            booking.serviceName ||
-                            booking.name ||
-                            "Pet Hotel"
-                          }
-                        </h3>
-
-                      </div>
-
-                      <span
-                        className={
-                          `booking-status ${getStatusClass(
-                            booking.status
-                          )}`
-                        }
-                      >
-                        {
-                          getStatusLabel(
-                            booking.status
-                          )
-                        }
-                      </span>
-
+              {myBookings.map((booking) => (
+                <div
+                  className="my-booking-card"
+                  key={booking.id || booking._id}
+                >
+                  <div className="my-booking-top">
+                    <div>
+                      <small>BOOKING #{booking.id || booking._id}</small>
+                      <h3>
+                        {booking.itemName ||
+                          booking.serviceName ||
+                          "Pet Hotel"}
+                      </h3>
                     </div>
-
-
-                    <div className="booking-user-info">
-
-                      <div>
-
-                        <FaUser />
-
-                        <span>
-                          Hewan
-                        </span>
-
-                        <strong>
-                          {
-                            booking.petName ||
-                            "-"
-                          }
-                        </strong>
-
-                      </div>
-
-
-                      <div>
-
-                        <FaPaw />
-
-                        <span>
-                          Jenis
-                        </span>
-
-                        <strong>
-                          {
-                            booking.petType ||
-                            booking.type ||
-                            "-"
-                          }
-                        </strong>
-
-                      </div>
-
-
-                      <div>
-
-                        <FaCalendarAlt />
-
-                        <span>
-                          Tanggal
-                        </span>
-
-                        <strong>
-                          {
-                            booking.date ||
-                            "-"
-                          }
-                        </strong>
-
-                      </div>
-
-
-                      <div>
-
-                        <FaMoneyBillWave />
-
-                        <span>
-                          Total
-                        </span>
-
-                        <strong>
-                          Rp{" "}
-                          {Number(
-                            booking.total ||
-                            (
-                              Number(
-                                booking.price ||
-                                0
-                              ) *
-                              Number(
-                                booking.quantity ||
-                                1
-                              )
-                            )
-                          ).toLocaleString(
-                            "id-ID"
-                          )}
-                        </strong>
-
-                      </div>
-
-                    </div>
-
-
-                    <div className="booking-payment-status">
-
-                      <span>
-                        Pembayaran
-                      </span>
-
-                      <strong>
-                        {
-                          getPaymentLabel(
-                            booking.paymentStatus
-                          )
-                        }
-                      </strong>
-
-                    </div>
-
-
-                    {/* =================================
-                        ACTION
-                    ================================= */}
-
-                    <div className="booking-actions">
-
-                      {/* MENUNGGU ADMIN */}
-
-                      {booking.status ===
-                        "menunggu" && (
-
-                        <div className="waiting-message">
-
-                          <FaClock />
-
-                          Menunggu konfirmasi
-                          admin
-
-                        </div>
-
-                      )}
-
-
-                      {/* DITOLAK */}
-
-                      {booking.status ===
-                        "ditolak" && (
-
-                        <div className="rejected-message">
-
-                          Booking ditolak
-                          admin.
-
-                        </div>
-
-                      )}
-
-
-                      {/* SUDAH DIKONFIRMASI
-                          BELUM BAYAR */}
-
-                      {booking.status ===
-                        "dikonfirmasi" &&
-                        booking.paymentStatus !==
-                          "dibayar" &&
-                        booking.paymentStatus !==
-                          "menunggu_verifikasi" && (
-
-                        <button
-                          className="pay-booking-btn"
-                          onClick={() =>
-                            openPayment(
-                              booking
-                            )
-                          }
-                        >
-
-                          <FaCreditCard />
-
-                          Bayar Sekarang
-
-                        </button>
-
-                      )}
-
-
-                      {/* PEMBAYARAN
-                          MENUNGGU VERIFIKASI */}
-
-                      {booking.paymentStatus ===
-                        "menunggu_verifikasi" && (
-
-                        <div className="waiting-payment">
-
-                          <FaClock />
-
-                          Pembayaran sedang
-                          diverifikasi admin.
-
-                        </div>
-
-                      )}
-
-
-                      {/* PEMBAYARAN
-                          SUDAH DIBAYAR */}
-
-                      {booking.paymentStatus ===
-                        "dibayar" &&
-                        booking.status !==
-                          "selesai" && (
-
-                        <div className="paid-message">
-
-                          <FaCheckCircle />
-
-                          Pembayaran berhasil.
-                          Menunggu layanan selesai.
-
-                        </div>
-
-                      )}
-
-
-                      {/* SELESAI
-                          BISA REVIEW */}
-
-                      {booking.status ===
-                        "selesai" && (
-
-                        <button
-                          className="review-booking-btn"
-                          onClick={() =>
-                            openReview(
-                              booking
-                            )
-                          }
-                        >
-
-                          <FaStar />
-
-                          Berikan Review
-
-                        </button>
-
-                      )}
-
-                    </div>
-
+                    <span
+                      className={`booking-status ${getStatusClass(
+                        booking.status
+                      )}`}
+                    >
+                      {getStatusLabel(booking.status)}
+                    </span>
                   </div>
 
-                )
-              )}
+                  <div className="booking-user-info">
+                    <div>
+                      <FaUser />
+                      <span>Hewan</span>
+                      <strong>{booking.petName || "-"}</strong>
+                    </div>
+                    <div>
+                      <FaPaw />
+                      <span>Jenis</span>
+                      <strong>{booking.petType || booking.type || "-"}</strong>
+                    </div>
+                    <div>
+                      <FaCalendarAlt />
+                      <span>Check-in</span>
+                      <strong>
+                        {formatTanggal(booking.checkIn || booking.date)}
+                      </strong>
+                    </div>
+                    <div>
+                      <FaCalendarAlt />
+                      <span>Check-out</span>
+                      <strong>{formatTanggal(booking.checkOut) || "-"}</strong>
+                    </div>
+                    <div>
+                      <FaMoneyBillWave />
+                      <span>Total</span>
+                      <strong>
+                        Rp{" "}
+                        {Number(
+                          booking.total ||
+                            Number(booking.price || 0) *
+                              Number(booking.quantity || 1)
+                        ).toLocaleString("id-ID")}
+                      </strong>
+                    </div>
+                    <div>
+                      <FaInfoCircle />
+                      <span>Metode Bayar</span>
+                      <strong>{booking.paymentMethod || "COD"}</strong>
+                    </div>
+                  </div>
 
+                  <div className="booking-payment-status">
+                    <span>Pembayaran</span>
+                    <strong>{getPaymentLabel(booking.paymentStatus)}</strong>
+                  </div>
+
+                  <div className="booking-actions">
+                    {booking.status === "menunggu" && (
+                      <div className="waiting-message">
+                        <FaClock />
+                        Menunggu konfirmasi admin
+                      </div>
+                    )}
+
+                    {(booking.status === "dikemas" ||
+                      booking.status === "dikonfirmasi") &&
+                      booking.paymentStatus === "belum_bayar" && (
+                        <div className="cod-info">
+                          <FaMoneyBillWave />
+                          Booking dikonfirmasi. Bayar di tempat saat
+                          check-in.
+                        </div>
+                      )}
+
+                    {(booking.status === "ditolak" ||
+                      booking.status === "dibatalkan") && (
+                      <div className="rejected-message">
+                        Booking {booking.status}.
+                      </div>
+                    )}
+
+                    {booking.status === "selesai" && (
+                      <button
+                        className="review-booking-btn"
+                        onClick={() => openReview(booking)}
+                      >
+                        <FaStar />
+                        Berikan Review
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
-
           )}
-
         </section>
-
       </section>
 
-
-      {/* =================================================
-          BOOKING MODAL
-      ================================================= */}
-
-      {showBooking &&
-        selectedHotel && (
-
-          <div
-            className="hotel-modal-overlay"
-            onClick={closeBooking}
-          >
-
-            <div
-              className="hotel-modal"
-              onClick={(e) =>
-                e.stopPropagation()
-              }
-            >
-
-              <div className="hotel-modal-header">
-
-                <div>
-
-                  <small>
-                    BOOKING PET HOTEL
-                  </small>
-
-                  <h2>
-                    {selectedHotel.name}
-                  </h2>
-
-                </div>
-
-                <button
-                  onClick={closeBooking}
-                  className="modal-close"
-                >
-                  <FaTimes />
-                </button>
-
+      {/* BOOKING MODAL */}
+      {showBooking && selectedHotel && (
+        <div className="hotel-modal-overlay" onClick={closeBooking}>
+          <div className="hotel-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="hotel-modal-header">
+              <div>
+                <small>BOOKING PET HOTEL</small>
+                <h2>{selectedHotel.name}</h2>
               </div>
-
-
-              <div className="selected-hotel-info">
-
-                <div>
-
-                  <FaPaw />
-
-                  <span>
-                    Hewan
-                  </span>
-
-                  <strong>
-                    {
-                      selectedHotel.animal ||
-                      "Semua Hewan"
-                    }
-                  </strong>
-
-                </div>
-
-
-                <div>
-
-                  <FaMoneyBillWave />
-
-                  <span>
-                    Harga / malam
-                  </span>
-
-                  <strong>
-                    Rp{" "}
-                    {Number(
-                      selectedHotel.price ||
-                      0
-                    ).toLocaleString(
-                      "id-ID"
-                    )}
-                  </strong>
-
-                </div>
-
-              </div>
-
-
-              <form
-                onSubmit={submitBooking}
-                className="hotel-booking-form"
+              <button
+                type="button"
+                onClick={closeBooking}
+                className="modal-close"
               >
-
-                <div className="form-field">
-
-                  <label>
-                    Nama Hewan
-                  </label>
-
-                  <div className="input-icon">
-
-                    <FaPaw />
-
-                    <input
-                      type="text"
-                      name="petName"
-                      value={
-                        bookingForm.petName
-                      }
-                      onChange={
-                        handleBookingChange
-                      }
-                      placeholder="Contoh: Mochi"
-                      required
-                    />
-
-                  </div>
-
-                </div>
-
-
-                <div className="form-field">
-
-                  <label>
-                    Jenis Hewan
-                  </label>
-
-                  <div className="input-icon">
-
-                    <FaPaw />
-
-                    <input
-                      type="text"
-                      name="petType"
-                      value={
-                        bookingForm.petType
-                      }
-                      onChange={
-                        handleBookingChange
-                      }
-                      placeholder="Contoh: Kucing"
-                    />
-
-                  </div>
-
-                </div>
-
-
-                <div className="form-row">
-
-                  <div className="form-field">
-
-                    <label>
-                      Tanggal Check-in
-                    </label>
-
-                    <div className="input-icon">
-
-                      <FaCalendarAlt />
-
-                      <input
-                        type="date"
-                        name="date"
-                        min={
-                          new Date()
-                            .toISOString()
-                            .split("T")[0]
-                        }
-                        value={
-                          bookingForm.date
-                        }
-                        onChange={
-                          handleBookingChange
-                        }
-                        required
-                      />
-
-                    </div>
-
-                  </div>
-
-
-                  <div className="form-field">
-
-                    <label>
-                      Jumlah Malam
-                    </label>
-
-                    <input
-                      type="number"
-                      name="quantity"
-                      min="1"
-                      value={
-                        bookingForm.quantity
-                      }
-                      onChange={
-                        handleBookingChange
-                      }
-                      required
-                    />
-
-                  </div>
-
-                </div>
-
-
-                <div className="form-field">
-
-                  <label>
-                    Nomor Telepon
-                  </label>
-
-                  <div className="input-icon">
-
-                    <FaPhone />
-
-                    <input
-                      type="text"
-                      name="phone"
-                      value={
-                        bookingForm.phone
-                      }
-                      onChange={
-                        handleBookingChange
-                      }
-                      placeholder="08xxxxxxxxxx"
-                      required
-                    />
-
-                  </div>
-
-                </div>
-
-
-                <div className="form-field">
-
-                  <label>
-                    Catatan
-                  </label>
-
-                  <textarea
-                    name="note"
-                    value={
-                      bookingForm.note
-                    }
-                    onChange={
-                      handleBookingChange
-                    }
-                    placeholder="Catatan tambahan untuk pet hotel..."
-                    rows="4"
-                  />
-
-                </div>
-
-
-                <div className="booking-total">
-
-                  <span>
-                    Estimasi Total
-                  </span>
-
-                  <strong>
-                    Rp{" "}
-                    {(
-                      Number(
-                        selectedHotel.price ||
-                        0
-                      ) *
-                      Number(
-                        bookingForm.quantity ||
-                        1
-                      )
-                    ).toLocaleString(
-                      "id-ID"
-                    )}
-                  </strong>
-
-                </div>
-
-
-                <div className="modal-actions">
-
-                  <button
-                    type="button"
-                    className="modal-cancel"
-                    onClick={closeBooking}
-                  >
-                    Batal
-                  </button>
-
-                  <button
-                    type="submit"
-                    className="modal-submit"
-                    disabled={
-                      bookingLoading
-                    }
-                  >
-
-                    {bookingLoading ? (
-                      "Mengirim..."
-                    ) : (
-                      <>
-                        <FaClipboardCheck />
-                        Ajukan Booking
-                      </>
-                    )}
-
-                  </button>
-
-                </div>
-
-              </form>
-
+                <FaTimes />
+              </button>
             </div>
 
-          </div>
-
-        )}
-
-
-      {/* =================================================
-          PAYMENT MODAL
-      ================================================= */}
-
-      {showPayment &&
-        selectedBooking && (
-
-          <div
-            className="hotel-modal-overlay"
-            onClick={() =>
-              setShowPayment(false)
-            }
-          >
-
-            <div
-              className="hotel-modal payment-modal"
-              onClick={(e) =>
-                e.stopPropagation()
-              }
-            >
-
-              <div className="hotel-modal-header">
-
-                <div>
-
-                  <small>
-                    PEMBAYARAN
-                  </small>
-
-                  <h2>
-                    Bayar Booking
-                  </h2>
-
-                </div>
-
-                <button
-                  className="modal-close"
-                  onClick={() =>
-                    setShowPayment(false)
-                  }
-                >
-                  <FaTimes />
-                </button>
-
+            <div className="selected-hotel-info">
+              <div>
+                <FaPaw />
+                <span>Hewan</span>
+                <strong>{selectedHotel.animal || "Semua Hewan"}</strong>
               </div>
-
-
-              <div className="payment-total-box">
-
-                <span>
-                  Total Pembayaran
-                </span>
-
+              <div>
+                <FaMoneyBillWave />
+                <span>Harga / malam</span>
                 <strong>
                   Rp{" "}
-                  {Number(
-                    selectedBooking.total ||
-                    (
-                      Number(
-                        selectedBooking.price ||
-                        0
-                      ) *
-                      Number(
-                        selectedBooking.quantity ||
-                        1
-                      )
-                    )
-                  ).toLocaleString(
-                    "id-ID"
-                  )}
+                  {Number(selectedHotel.price || 0).toLocaleString("id-ID")}
                 </strong>
-
               </div>
-
-
-              <form
-                onSubmit={submitPayment}
-                className="hotel-booking-form"
-              >
-
-                <div className="form-field">
-
-                  <label>
-                    Metode Pembayaran
-                  </label>
-
-                  <select
-                    name="method"
-                    value={
-                      paymentForm.method
-                    }
-                    onChange={
-                      handlePaymentChange
-                    }
-                  >
-
-                    <option>
-                      Transfer Bank
-                    </option>
-
-                    <option>
-                      E-Wallet
-                    </option>
-
-                    <option>
-                      QRIS
-                    </option>
-
-                  </select>
-
-                </div>
-
-
-                <div className="payment-bank-info">
-
-                  <strong>
-                    Rekening Pembayaran
-                  </strong>
-
-                  <p>
-                    Bank BCA
-                  </p>
-
-                  <p>
-                    1234567890
-                  </p>
-
-                  <p>
-                    a.n. PetCare Hub Zalta
-                  </p>
-
-                </div>
-
-
-                <div className="form-field">
-
-                  <label>
-                    Bukti Pembayaran
-                  </label>
-
-                  <input
-                    type="file"
-                    name="proof"
-                    accept="image/*"
-                    onChange={
-                      handlePaymentChange
-                    }
-                    required
-                  />
-
-                  <small>
-                    Upload bukti transfer
-                    dalam format JPG, PNG,
-                    atau WEBP.
-                  </small>
-
-                </div>
-
-
-                <div className="modal-actions">
-
-                  <button
-                    type="button"
-                    className="modal-cancel"
-                    onClick={() =>
-                      setShowPayment(false)
-                    }
-                  >
-                    Batal
-                  </button>
-
-                  <button
-                    type="submit"
-                    className="modal-submit"
-                  >
-
-                    <FaCreditCard />
-
-                    Kirim Pembayaran
-
-                  </button>
-
-                </div>
-
-              </form>
-
             </div>
 
-          </div>
-
-        )}
-
-
-      {/* =================================================
-          REVIEW MODAL
-      ================================================= */}
-
-      {showReview &&
-        selectedBooking && (
-
-          <div
-            className="hotel-modal-overlay"
-            onClick={() =>
-              setShowReview(false)
-            }
-          >
-
-            <div
-              className="hotel-modal review-modal"
-              onClick={(e) =>
-                e.stopPropagation()
-              }
+            <form
+              onSubmit={submitBooking}
+              className="hotel-booking-form"
+              autoComplete="off"
             >
-
-              <div className="hotel-modal-header">
-
-                <div>
-
-                  <small>
-                    REVIEW LAYANAN
-                  </small>
-
-                  <h2>
-                    Bagaimana pengalamanmu?
-                  </h2>
-
-                </div>
-
-                <button
-                  className="modal-close"
-                  onClick={() =>
-                    setShowReview(false)
-                  }
-                >
-                  <FaTimes />
-                </button>
-
-              </div>
-
-
-              <form
-                onSubmit={submitReview}
-                className="hotel-booking-form"
-              >
-
-                <div className="rating-select">
-
-                  <label>
-                    Rating
-                  </label>
-
-                  <div className="stars">
-
-                    {[1, 2, 3, 4, 5].map(
-                      (star) => (
-
-                        <button
-                          type="button"
-                          key={star}
-                          className={
-                            star <=
-                            reviewForm.rating
-                              ? "star active"
-                              : "star"
-                          }
-                          onClick={() =>
-                            setReviewForm(
-                              (prev) => ({
-                                ...prev,
-                                rating:
-                                  star,
-                              })
-                            )
-                          }
-                        >
-                          <FaStar />
-                        </button>
-
-                      )
-                    )}
-
-                  </div>
-
-                </div>
-
-
-                <div className="form-field">
-
-                  <label>
-                    Review
-                  </label>
-
-                  <textarea
-                    value={
-                      reviewForm.review
-                    }
-                    onChange={(e) =>
-                      setReviewForm(
-                        (prev) => ({
-                          ...prev,
-                          review:
-                            e.target.value,
-                        })
-                      )
-                    }
-                    placeholder="Ceritakan pengalaman kamu..."
-                    rows="5"
+              <div className="form-field">
+                <label>Nama Hewan</label>
+                <div className="input-icon">
+                  <FaPaw />
+                  <input
+                    type="text"
+                    name="petName"
+                    value={bookingForm.petName}
+                    onChange={handleBookingChange}
+                    placeholder="Contoh: Mochi"
+                    autoComplete="off"
                     required
                   />
+                </div>
+              </div>
 
+              <div className="form-field">
+                <label>Jenis Hewan</label>
+                <div className="input-icon">
+                  <FaPaw />
+                  <input
+                    type="text"
+                    name="petType"
+                    value={bookingForm.petType}
+                    onChange={handleBookingChange}
+                    placeholder="Contoh: Kucing"
+                    autoComplete="off"
+                  />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-field">
+                  <label>Tanggal Check-in</label>
+                  <div className="input-icon">
+                    <FaCalendarAlt />
+                    <input
+                      type="date"
+                      name="checkIn"
+                      min={new Date().toISOString().split("T")[0]}
+                      value={bookingForm.checkIn}
+                      onChange={handleDateChange}
+                      required
+                    />
+                  </div>
                 </div>
 
-
-                <div className="modal-actions">
-
-                  <button
-                    type="button"
-                    className="modal-cancel"
-                    onClick={() =>
-                      setShowReview(false)
-                    }
-                  >
-                    Batal
-                  </button>
-
-                  <button
-                    type="submit"
-                    className="modal-submit"
-                  >
-
-                    <FaStar />
-
-                    Kirim Review
-
-                  </button>
-
+                <div className="form-field">
+                  <label>Tanggal Check-out</label>
+                  <div className="input-icon">
+                    <FaCalendarAlt />
+                    <input
+                      type="date"
+                      name="checkOut"
+                      min={
+                        bookingForm.checkIn ||
+                        new Date().toISOString().split("T")[0]
+                      }
+                      value={bookingForm.checkOut}
+                      onChange={handleDateChange}
+                      required
+                    />
+                  </div>
                 </div>
+              </div>
 
-              </form>
+              <div className="form-field">
+                <label>Jumlah Malam (otomatis)</label>
+                <input
+                  type="number"
+                  name="quantity"
+                  value={bookingForm.quantity}
+                  readOnly
+                />
+              </div>
 
+              <div className="form-field">
+                <label>
+                  Nomor Telepon{" "}
+                  {bookingForm.phone && (
+                    <span className="auto-fill-note">
+                      ✓ Terisi otomatis dari akun
+                    </span>
+                  )}
+                </label>
+                <div className="input-icon">
+                  <FaPhone />
+                  <input
+                    type="text"
+                    name="phone"
+                    value={bookingForm.phone}
+                    onChange={handleBookingChange}
+                    placeholder="08xxxxxxxxxx"
+                    autoComplete="off"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="form-field">
+                <label>
+                  Alamat{" "}
+                  {bookingForm.address && (
+                    <span className="auto-fill-note">
+                      ✓ Terisi otomatis dari akun
+                    </span>
+                  )}
+                </label>
+                <div className="input-icon">
+                  <FaMapMarkerAlt />
+                  <input
+                    type="text"
+                    name="address"
+                    value={bookingForm.address}
+                    onChange={handleBookingChange}
+                    placeholder="Alamat lengkap"
+                    autoComplete="off"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="form-field">
+                <label>Catatan</label>
+                <textarea
+                  name="note"
+                  value={bookingForm.note}
+                  onChange={handleBookingChange}
+                  placeholder="Catatan tambahan untuk pet hotel..."
+                  rows="3"
+                />
+              </div>
+
+              <div className="cod-info-box">
+                <FaInfoCircle />
+                <div>
+                  <strong>Pembayaran: COD (Bayar di Tempat)</strong>
+                  <p>Bayar saat check-in di pet hotel.</p>
+                </div>
+              </div>
+
+              <div className="booking-total">
+                <span>Estimasi Total</span>
+                <strong>
+                  Rp{" "}
+                  {(
+                    Number(selectedHotel.price || 0) *
+                    Number(bookingForm.quantity || 1)
+                  ).toLocaleString("id-ID")}
+                </strong>
+              </div>
+
+              <div className="modal-actions">
+                <button
+                  type="button"
+                  className="modal-cancel"
+                  onClick={closeBooking}
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  className="modal-submit"
+                  disabled={bookingLoading}
+                >
+                  {bookingLoading ? (
+                    "Mengirim..."
+                  ) : (
+                    <>
+                      <FaClipboardCheck />
+                      Ajukan Booking
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* REVIEW MODAL */}
+      {showReview && selectedBooking && (
+        <div
+          className="hotel-modal-overlay"
+          onClick={() => setShowReview(false)}
+        >
+          <div
+            className="hotel-modal review-modal"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="hotel-modal-header">
+              <div>
+                <small>REVIEW LAYANAN</small>
+                <h2>Bagaimana pengalamanmu?</h2>
+              </div>
+              <button
+                className="modal-close"
+                onClick={() => setShowReview(false)}
+              >
+                <FaTimes />
+              </button>
             </div>
 
+            <form onSubmit={submitReview} className="hotel-booking-form">
+              <div className="rating-select">
+                <label>Rating</label>
+                <div className="stars">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      type="button"
+                      key={star}
+                      className={
+                        star <= reviewForm.rating ? "star active" : "star"
+                      }
+                      onClick={() =>
+                        setReviewForm((prev) => ({ ...prev, rating: star }))
+                      }
+                    >
+                      <FaStar />
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="form-field">
+                <label>Review</label>
+                <textarea
+                  value={reviewForm.review}
+                  onChange={(e) =>
+                    setReviewForm((prev) => ({
+                      ...prev,
+                      review: e.target.value,
+                    }))
+                  }
+                  placeholder="Ceritakan pengalaman kamu..."
+                  rows="5"
+                  required
+                />
+              </div>
+
+              <div className="modal-actions">
+                <button
+                  type="button"
+                  className="modal-cancel"
+                  onClick={() => setShowReview(false)}
+                >
+                  Batal
+                </button>
+                <button type="submit" className="modal-submit">
+                  <FaStar />
+                  Kirim Review
+                </button>
+              </div>
+            </form>
           </div>
-
-        )}
-
+        </div>
+      )}
     </div>
   );
 };

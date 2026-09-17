@@ -698,3 +698,26 @@ button[type="submit"]:disabled {
   .toast-container { top: 12px; right: 12px; left: 12px; }
   .toast { min-width: 0; max-width: 100%; }
 }
+/* Pastikan wrapper memiliki posisi relatif */
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Atur posisi icon */
+.input-icon {
+  position: absolute;
+  left: 15px; /* Jarak icon dari kiri */
+  color: #888; /* Warna icon */
+  z-index: 2; /* Agar icon berada di atas input */
+  display: flex;
+  align-items: center;
+}
+
+/* Beri jarak pada input dan textarea agar teks tidak nabrak icon */
+.input-wrapper input,
+.input-wrapper textarea {
+  padding-left: 45px; /* Sesuaikan angka ini dengan kebutuhan (misal: 40px - 50px) */
+  width: 100%;
+}

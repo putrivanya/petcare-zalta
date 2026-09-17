@@ -8,18 +8,22 @@ import {
   FaCheckCircle,
   FaPaw,
   FaShoppingCart,
+  FaTruck // Icon untuk kurir
 } from "react-icons/fa";
 import "./Checkout.css";
 
 function Checkout() {
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([]);
+  const [shippingCost, setShippingCost] = useState(0);
+  
   const [form, setForm] = useState({
     address: "",
     city: "",
     postalCode: "",
     phone: "",
     paymentMethod: "cod",
+    courier: "jne", // Default kurir
     notes: "",
   });
 
@@ -27,32 +31,20 @@ function Checkout() {
   // AMBIL DATA USER & CART SAAT MOUNT
   // ============================================================
   useEffect(() => {
-    // ---------- 1. AUTO-FILL ALAMAT & NOMOR HP ----------
     try {
-      const rawUser =
-        localStorage.getItem("user") ||
-        localStorage.getItem("currentUser");
-
+      const rawUser = localStorage.getItem("user") || localStorage.getItem("currentUser");
       if (rawUser) {
         const user = JSON.parse(rawUser);
-
         setForm((prev) => ({
           ...prev,
           address: user.alamat || prev.address,
           phone: user.no_telpon || prev.phone,
         }));
-
-        console.log("=================================");
-        console.log("AUTO-FILL CHECKOUT DARI USER:");
-        console.log("Alamat  :", user.alamat);
-        console.log("Telepon :", user.no_telpon);
-        console.log("=================================");
       }
     } catch (err) {
       console.error("Gagal parse user dari localStorage:", err);
     }
 
-    // ---------- 2. AMBIL CART ----------
     const savedCart = JSON.parse(localStorage.getItem("checkoutCart"));
     if (Array.isArray(savedCart) && savedCart.length > 0) {
       setCartItems(savedCart);
@@ -62,27 +54,54 @@ function Checkout() {
   }, [navigate]);
 
   // ============================================================
-  // FORMAT RUPIAH
+  // SIMULASI PERHITUNGAN ONGKIR
+  // ============================================================
+  useEffect(() => {
+    // Logika simulasi: Harga ongkir berdasarkan kata kunci kota dan kurir
+    const hitungOngkir = () => {
+      const cityLower = form.city.toLowerCase();
+      let baseCost = 15000; // Ongkir dasar
+
+      if (cityLower.includes("jakarta")) baseCost = 15000;
+      else if (cityLower.includes("bandung")) baseCost = 20000;
+      else if (cityLower.includes("surabaya")) baseCost = 30000;
+      else if (cityLower.includes("medan")) baseCost = 45000;
+      else if (cityLower.includes("papua")) baseCost = 75000;
+      else if (cityLower.length > 0) baseCost = 25000; // Default jika kota lain diisi
+
+      // Penyesuaian berdasarkan kurir
+      if (form.courier === "jne") return baseCost;
+      if (form.courier === "jnt") return baseCost + 2000;
+      if (form.courier === "sicepat") return baseCost - 1000;
+      return baseCost;
+    };
+
+    if (form.city) {
+      setShippingCost(hitungOngkir());
+    } else {
+      setShippingCost(0);
+    }
+  }, [form.city, form.courier]);
+
+  // ============================================================
+  // FORMAT RUPIAH & TOTAL
   // ============================================================
   const formatRupiah = (value) => {
     return Number(value || 0).toLocaleString("id-ID");
   };
 
-  const totalHarga = cartItems.reduce(
+  const subtotal = cartItems.reduce(
     (total, item) => total + Number(item.price) * Number(item.quantity),
     0
   );
-
-  // ============================================================
-  // SANITASI NOTES
-  // ============================================================
-  const sanitizeNotes = (value) => {
-    return value.replace(/[^a-zA-Z0-9\s.,?!\-']/g, "");
-  };
+  
+  const grandTotal = subtotal + shippingCost;
 
   // ============================================================
   // HANDLE CHANGE
   // ============================================================
+  const sanitizeNotes = (value) => value.replace(/[^a-zA-Z0-9\s.,?!\-']/g, "");
+
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -93,39 +112,25 @@ function Checkout() {
     }
 
     if (name === "notes") {
-      const cleanNotes = sanitizeNotes(value);
-      setForm((prev) => ({ ...prev, [name]: cleanNotes }));
+      setForm((prev) => ({ ...prev, [name]: sanitizeNotes(value) }));
       return;
     }
 
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  // ============================================================
-  // CEGAH HURUF / SIMBOL DI POSTAL & PHONE
-  // ============================================================
   const handleKeyPress = (e) => {
     const { name } = e.target;
     if (name === "postalCode" || name === "phone") {
       const key = e.key;
-      if (
-        !/^[0-9]$/.test(key) &&
-        key !== "Backspace" &&
-        key !== "Delete" &&
-        key !== "ArrowLeft" &&
-        key !== "ArrowRight" &&
-        key !== "ArrowUp" &&
-        key !== "ArrowDown" &&
-        key !== "Tab" &&
-        key !== "Enter"
-      ) {
+      if (!/^[0-9]$/.test(key) && key !== "Backspace" && key !== "Delete" && key !== "ArrowLeft" && key !== "ArrowRight" && key !== "Tab" && key !== "Enter") {
         e.preventDefault();
       }
     }
   };
 
   // ============================================================
-  // SUBMIT ORDER
+  // SUBMIT ORDER (DIPERBARUI)
   // ============================================================
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -138,47 +143,42 @@ function Checkout() {
       alert("Nomor telepon minimal 10 digit.");
       return;
     }
-    if (form.postalCode && form.postalCode.length < 5) {
-      alert("Kode pos minimal 5 digit (jika diisi).");
-      return;
-    }
-    if (!/^\d+$/.test(form.phone)) {
-      alert("Nomor telepon hanya boleh berisi angka.");
-      return;
-    }
-    if (form.postalCode && !/^\d+$/.test(form.postalCode)) {
-      alert("Kode pos hanya boleh berisi angka.");
-      return;
-    }
 
+    // Nomor resi TIDAK dibuat di sini, akan diinput oleh Admin
     const order = {
       id: Date.now().toString(),
       items: cartItems,
-      total: totalHarga,
+      subtotal: subtotal,
+      shippingCost: shippingCost,
+      total: grandTotal,
       address: form.address,
       city: form.city,
       postalCode: form.postalCode,
       phone: form.phone,
+      courier: form.courier.toUpperCase(), // Simpan kurir yang dipilih pembeli
+      trackingNumber: "", // Dikosongkan, nanti diisi Admin
       paymentMethod: form.paymentMethod === "cod" ? "COD" : "E-Wallet",
       notes: form.notes,
-      status: "menunggu",
+      status: "pending", // Status awal untuk diproses Admin
+      statusHistory: [
+        { status: "Pesanan Dibuat", time: new Date().toISOString() },
+        { status: "Menunggu Konfirmasi", time: new Date().toISOString() }
+      ],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
 
+    // Simpan ke localStorage (sementara, sampai terhubung ke Backend API)
     const existingOrders = JSON.parse(localStorage.getItem("orders")) || [];
-    const updatedOrders = [order, ...existingOrders];
-    localStorage.setItem("orders", JSON.stringify(updatedOrders));
+    localStorage.setItem("orders", JSON.stringify([order, ...existingOrders]));
 
     localStorage.removeItem("cart");
     localStorage.removeItem("checkoutCart");
 
+    // Arahkan ke halaman sukses, bawa ID pesanan
     navigate("/order-success", { state: { orderId: order.id } });
   };
 
-  // ============================================================
-  // KOSONG
-  // ============================================================
   if (cartItems.length === 0) {
     return (
       <div className="checkout-page">
@@ -194,9 +194,6 @@ function Checkout() {
     );
   }
 
-  // ============================================================
-  // RENDER
-  // ============================================================
   return (
     <div className="checkout-page">
       <div className="checkout-container">
@@ -209,6 +206,8 @@ function Checkout() {
 
         <div className="checkout-grid">
           <form className="checkout-form" onSubmit={handleSubmit}>
+            
+            {/* ALAMAT PENGIRIMAN */}
             <div className="form-section">
               <h3><FaPaw className="section-icon" /> Alamat Pengiriman</h3>
               <div className="form-group">
@@ -219,7 +218,7 @@ function Checkout() {
                   onChange={handleChange}
                   required
                   rows="3"
-                  placeholder="Contoh: Jl. Merdeka No. 12, RT 05 RW 03, Kelurahan Sukamaju"
+                  placeholder="Contoh: Jl. Merdeka No. 12, RT 05 RW 03"
                 />
               </div>
               <div className="form-row">
@@ -245,8 +244,6 @@ function Checkout() {
                     onKeyPress={handleKeyPress}
                     placeholder="Contoh: 12345"
                     maxLength="10"
-                    title="Hanya angka"
-                    autoComplete="postal-code"
                   />
                 </div>
               </div>
@@ -262,47 +259,51 @@ function Checkout() {
                   required
                   placeholder="Contoh: 081234567890"
                   maxLength="15"
-                  title="Hanya angka, minimal 10 digit"
-                  autoComplete="tel"
                 />
               </div>
             </div>
 
+            {/* METODE PENGIRIMAN */}
+            <div className="form-section">
+              <h3><FaTruck className="section-icon" /> Metode Pengiriman</h3>
+              <div className="form-group">
+                <label>Pilih Kurir *</label>
+                <select 
+                  name="courier" 
+                  value={form.courier} 
+                  onChange={handleChange}
+                  className="courier-select"
+                >
+                  <option value="jne">JNE Reguler</option>
+                  <option value="jnt">J&T Express</option>
+                  <option value="sicepat">SiCepat Halu</option>
+                </select>
+              </div>
+              {form.city && (
+                <p className="shipping-info">
+                  Estimasi ongkir ke <strong>{form.city}</strong>: Rp {formatRupiah(shippingCost)}
+                </p>
+              )}
+            </div>
+
+            {/* METODE PEMBAYARAN */}
             <div className="form-section">
               <h3><FaWallet className="section-icon" /> Metode Pembayaran</h3>
               <div className="payment-options">
                 <label className={`payment-option ${form.paymentMethod === "cod" ? "active" : ""}`}>
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    value="cod"
-                    checked={form.paymentMethod === "cod"}
-                    onChange={handleChange}
-                  />
+                  <input type="radio" name="paymentMethod" value="cod" checked={form.paymentMethod === "cod"} onChange={handleChange} />
                   <FaMoneyBillWave className="option-icon" />
                   <span className="option-label">COD (Bayar di Tempat)</span>
-                  <span className="option-sub">✓</span>
                 </label>
                 <label className={`payment-option ${form.paymentMethod === "ewallet" ? "active" : ""}`}>
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    value="ewallet"
-                    checked={form.paymentMethod === "ewallet"}
-                    onChange={handleChange}
-                  />
+                  <input type="radio" name="paymentMethod" value="ewallet" checked={form.paymentMethod === "ewallet"} onChange={handleChange} />
                   <FaWallet className="option-icon" />
-                  <span className="option-label">E-Wallet (OVO, Gopay, Dana, LinkAja)</span>
-                  <span className="option-sub">✓</span>
+                  <span className="option-label">E-Wallet (OVO, Gopay, Dana)</span>
                 </label>
               </div>
-              <p className="payment-note">
-                {form.paymentMethod === "cod"
-                  ? "Pembayaran dilakukan saat barang tiba di alamat Anda."
-                  : "Anda akan diarahkan ke aplikasi E-Wallet untuk menyelesaikan pembayaran."}
-              </p>
             </div>
 
+            {/* CATATAN */}
             <div className="form-section">
               <h3><FaCreditCard className="section-icon" /> Catatan (Opsional)</h3>
               <div className="form-group">
@@ -311,9 +312,8 @@ function Checkout() {
                   value={form.notes}
                   onChange={handleChange}
                   rows="2"
-                  placeholder="Tambahkan catatan untuk kurir atau penjual, misal: 'Titipkan di depan pintu pagar' atau 'Hubungi via WA sebelum sampai'"
+                  placeholder="Contoh: Titipkan di depan pintu pagar"
                 />
-                <small className="notes-hint">Hanya huruf, angka, spasi, dan tanda baca dasar (.,?!-')</small>
               </div>
             </div>
 
@@ -322,6 +322,7 @@ function Checkout() {
             </button>
           </form>
 
+          {/* RINGKASAN PESANAN */}
           <div className="checkout-summary">
             <h3><FaPaw className="section-icon" /> Ringkasan Pesanan</h3>
             <div className="summary-items">
@@ -330,17 +331,29 @@ function Checkout() {
                   <img src={item.image} alt={item.name} />
                   <div>
                     <p>{item.name}</p>
-                    <span>
-                      {item.quantity} x Rp {formatRupiah(item.price)}
-                    </span>
+                    <span>{item.quantity} x Rp {formatRupiah(item.price)}</span>
                   </div>
                 </div>
               ))}
             </div>
             <hr />
+            
+            {/* Rincian Biaya */}
+            <div className="summary-cost">
+              <div className="cost-row">
+                <span>Subtotal Produk</span>
+                <span>Rp {formatRupiah(subtotal)}</span>
+              </div>
+              <div className="cost-row">
+                <span>Ongkos Kirim ({form.courier.toUpperCase()})</span>
+                <span>Rp {formatRupiah(shippingCost)}</span>
+              </div>
+            </div>
+            
+            <hr />
             <div className="checkout-total">
-              <span>Total</span>
-              <strong>Rp {formatRupiah(totalHarga)}</strong>
+              <span>Total Bayar</span>
+              <strong>Rp {formatRupiah(grandTotal)}</strong>
             </div>
           </div>
         </div>

@@ -152,6 +152,7 @@ function Cart() {
     postalCode: "",
     phone: "",
     paymentMethod: "cod",
+    courier: "jne", // <-- Tambahan: Default Kurir
     notes: "",
   });
 
@@ -248,7 +249,6 @@ function Cart() {
     loadOrders();
   }, []);
 
-  // ✅ useEffect: auto-fill saat view berubah ke "checkout"
   useEffect(() => {
     if (view !== "checkout") return;
 
@@ -288,9 +288,6 @@ function Cart() {
     }
   };
 
-  // ============================================================
-  // ✅ LOAD ORDERS — DENGAN NOTIFIKASI YANG SUDAH DIPERBAIKI
-  // ============================================================
   const loadOrders = async () => {
     setFetchingOrders(true);
     try {
@@ -320,13 +317,10 @@ function Cart() {
           myOrders.sort((a, b) => new Date(b.createdAt || b.date) - new Date(a.createdAt || a.date));
           setOrders(myOrders);
 
-          // ✅ FILTER PESANAN YANG SUDAH SELESAI
           const completedOrders = myOrders.filter(
             (o) => (o.status || "").toLowerCase() === "selesai"
           );
 
-          // ✅ AMBIL LIST ID YANG SUDAH PERNAH DINOTIFIKASI
-          // Konversi semua ke String biar konsisten tipenya
           let notifiedIds = [];
           try {
             const raw = JSON.parse(localStorage.getItem("notifiedCompletedOrders") || "[]");
@@ -339,24 +333,20 @@ function Cart() {
           let hasNewNotification = false;
 
           completedOrders.forEach((order) => {
-            // ✅ KONVERSI ID KE STRING — biar konsisten
             const rawId = order.id ?? order._id;
             const idStr = rawId !== undefined && rawId !== null ? String(rawId) : null;
 
             if (!idStr) return;
 
-            // ✅ CEK APAKAH SUDAH PERNAH DINOTIFIKASI
             if (!notifiedIds.includes(idStr)) {
               const shortId = idStr.slice(-8);
 
-              // ✅ TOAST 1 — "Sudah diantar"
               showToast(
                 `✅ Pesanan #${shortId} sudah di antar. Terima kasih sudah belanja di PetCare Hub Zalta!`,
                 "success",
                 6000
               );
 
-              // ✅ TOAST 2 (delay 1.5 detik) — "Jangan lupa review"
               setTimeout(() => {
                 showToast(
                   `⭐ Jangan lupa beri review untuk pesanan #${shortId} ya!`,
@@ -428,7 +418,7 @@ function Cart() {
   };
 
   // ============================================
-  // CHECKOUT — DENGAN AUTO-FILL
+  // CHECKOUT & FORM
   // ============================================
   const handleCheckout = () => {
     if (cartItems.length === 0) {
@@ -456,9 +446,6 @@ function Cart() {
     setView("checkout");
   };
 
-  // ============================================
-  // HANDLE FORM CHANGE
-  // ============================================
   const handleFormChange = (e) => {
     const { name, value } = e.target;
 
@@ -477,9 +464,6 @@ function Cart() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  // ============================================
-  // PLACE ORDER
-  // ============================================
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
     if (!form.address || !form.city || !form.phone) {
@@ -530,6 +514,9 @@ function Cart() {
       category: item.category || "",
     }));
 
+    // ============================================================
+    // PERUBAHAN DI PAYLOAD: Tambah courier, kosongkan trackingNumber
+    // ============================================================
     const payload = {
       items: itemsPayload,
       total: total,
@@ -537,6 +524,8 @@ function Cart() {
       city: form.city,
       postalCode: form.postalCode,
       phone: form.phone,
+      courier: form.courier.toUpperCase(), // <-- Kirim pilihan kurir ke backend
+      trackingNumber: "", // <-- Dikosongkan, nanti diisi Admin
       paymentMethod: "COD",
       notes: form.notes,
       status: "menunggu",
@@ -569,6 +558,7 @@ function Cart() {
           postalCode: "",
           phone: "",
           paymentMethod: "cod",
+          courier: "jne",
           notes: "",
         });
         await loadOrders();
@@ -828,7 +818,7 @@ function Cart() {
   };
 
   // ============================================
-  // RENDER CHECKOUT
+  // RENDER CHECKOUT (DIPERBARUI DENGAN PILIHAN KURIR)
   // ============================================
   const renderCheckout = () => {
     const totalHarga = cartItems.reduce((sum, item) => sum + Number(item.price) * Number(item.quantity), 0);
@@ -884,6 +874,29 @@ function Cart() {
                   />
                 </div>
               </div>
+
+              {/* ============================================ */}
+              {/* TAMBAHAN: METODE PENGIRIMAN (PILIH KURIR) */}
+              {/* ============================================ */}
+              <div className="form-section">
+                <h3><FaTruck className="section-icon" /> Metode Pengiriman</h3>
+                <div className="form-group">
+                  <label>Pilih Kurir *</label>
+                  <select 
+                    name="courier" 
+                    value={form.courier} 
+                    onChange={handleFormChange}
+                    className="courier-select"
+                    style={{ width: "100%", padding: "10px", borderRadius: "8px", border: "1px solid #ccc" }}
+                  >
+                    <option value="jne">JNE Reguler</option>
+                    <option value="jnt">J&T Express</option>
+                    <option value="sicepat">SiCepat Halu</option>
+                  </select>
+                </div>
+              </div>
+              {/* ============================================ */}
+
               <div className="form-section">
                 <h3><FaMoneyBillWave className="section-icon" /> Metode Pembayaran</h3>
                 <div className="payment-options">
@@ -1038,6 +1051,29 @@ function Cart() {
                           <strong>Rp {formatRupiah(order.total || order.price)}</strong>
                         </div>
                         <div className="order-card-actions">
+                          
+                          <Link
+                            to={`/track-order/${order.id || order._id}`}
+                            state={{ order }}
+                            className="btn-track"
+                            style={{
+                              backgroundColor: "#3b82f6",
+                              color: "#fff",
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: "6px",
+                              padding: "8px 12px",
+                              borderRadius: "6px",
+                              textDecoration: "none",
+                              fontSize: "14px",
+                              fontWeight: "600",
+                              border: "none",
+                              cursor: "pointer"
+                            }}
+                          >
+                            <FaTruck /> Lacak
+                          </Link>
+                          
                           <button
                             className="btn-detail"
                             onClick={() => viewOrderDetail(order)}
@@ -1045,6 +1081,7 @@ function Cart() {
                           >
                             <FaEye /> Detail
                           </button>
+                          
                           {(order.status === "menunggu" || order.status === "pending") && (
                             <button
                               className="btn-cancel"
@@ -1077,7 +1114,7 @@ function Cart() {
   };
 
   // ============================================
-  // RENDER DETAIL
+  // RENDER DETAIL (DIPERBARUI MENAMPILKAN KURIR & RESI)
   // ============================================
   const renderOrderDetail = () => {
     if (!selectedOrder) return null;
@@ -1101,6 +1138,24 @@ function Cart() {
               <span className="label">Metode Pembayaran</span>
               <span style={{ fontWeight: 500, color: "#1e293b" }}>COD (Bayar di Tempat)</span>
             </div>
+
+            {/* ============================================ */}
+            {/* TAMBAHAN: TAMPILKAN KURIR & NO RESI */}
+            {/* ============================================ */}
+            <div className="detail-row">
+              <span className="label">Kurir Pengiriman</span>
+              <span style={{ fontWeight: 500, color: "#1e293b" }}>
+                {selectedOrder.courier || "-"}
+              </span>
+            </div>
+            <div className="detail-row">
+              <span className="label">Nomor Resi</span>
+              <span style={{ fontWeight: 500, color: "#1e293b" }}>
+                {selectedOrder.trackingNumber || "Menunggu input dari penjual"}
+              </span>
+            </div>
+            {/* ============================================ */}
+
             <div className="detail-row">
               <span className="label">Tanggal</span>
               <span>{formatDate(selectedOrder.createdAt || selectedOrder.date)}</span>
