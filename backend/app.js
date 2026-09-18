@@ -28,7 +28,7 @@ const animalRoutes = require("./routes/animalRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
 const adoptionRoutes = require("./routes/adoptionRoutes");
 const consultationsRoutes = require("./routes/consultationsRoutes");
-const medicalRecordsRoutes = require("./routes/medicalRecordsRoutes"); // <-- BARU
+const medicalRecordsRoutes = require("./routes/medicalRecordsRoutes");
 
 // ======================================================
 // APP
@@ -54,24 +54,58 @@ app.use("/uploads", express.static(uploadsDir));
 // ======================================================
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://127.0.0.1:5173"],
+    origin: [
+      // FRONTEND DEVELOPMENT
+      "http://localhost:5173",
+      "http://127.0.0.1:5173",
+
+      // FRONTEND PRODUCTION PREVIEW
+      "http://localhost:4173",
+      "http://127.0.0.1:4173",
+    ],
+
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+
+    methods: [
+      "GET",
+      "POST",
+      "PUT",
+      "DELETE",
+      "PATCH",
+      "OPTIONS",
+    ],
+
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+    ],
   })
 );
 
 // ======================================================
 // BODY PARSER
 // ======================================================
-app.use(express.json({ limit: "5mb" }));
-app.use(express.urlencoded({ extended: true, limit: "5mb" }));
+app.use(
+  express.json({
+    limit: "5mb",
+  })
+);
+
+app.use(
+  express.urlencoded({
+    extended: true,
+    limit: "5mb",
+  })
+);
 
 // ======================================================
 // LOGGER
 // ======================================================
 app.use((req, res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`);
+  console.log(
+    `[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`
+  );
+
   next();
 });
 
@@ -83,9 +117,8 @@ app.use("/api/auth", authRoutes);
 // ======================================================
 // BOOKING
 // ======================================================
-// PENTING:
-// Booking harus dipasang SEBELUM app.use("/api", adminRoutes)
-// Karena adminRoutes pakai prefix /api.
+// Booking dipasang sebelum adminRoutes
+// karena adminRoutes menggunakan prefix /api
 // ======================================================
 app.use("/api/bookings", bookingRoutes);
 
@@ -95,14 +128,20 @@ app.use("/api/bookings", bookingRoutes);
 app.use("/api/reviews", reviewRoutes);
 
 // ======================================================
-// CONSULTATIONS (KONSULTASI DOKTER)
+// CONSULTATIONS
 // ======================================================
-app.use("/api/consultations", consultationsRoutes);
+app.use(
+  "/api/consultations",
+  consultationsRoutes
+);
 
 // ======================================================
-// MEDICAL RECORDS (RIWAYAT PEMERIKSAAN)  <-- BARU
+// MEDICAL RECORDS
 // ======================================================
-app.use("/api/medical-records", medicalRecordsRoutes);
+app.use(
+  "/api/medical-records",
+  medicalRecordsRoutes
+);
 
 // ======================================================
 // ADMIN CRUD
@@ -112,17 +151,26 @@ app.use("/api", adminRoutes);
 // ======================================================
 // TRANSACTIONS
 // ======================================================
-app.use("/api/transactions", transactionRoutes);
+app.use(
+  "/api/transactions",
+  transactionRoutes
+);
 
 // ======================================================
 // ANIMALS
 // ======================================================
-app.use("/api/animals", animalRoutes);
+app.use(
+  "/api/animals",
+  animalRoutes
+);
 
 // ======================================================
 // ADOPTIONS
 // ======================================================
-app.use("/api/adoption-requests", adoptionRoutes);
+app.use(
+  "/api/adoption-requests",
+  adoptionRoutes
+);
 
 // ======================================================
 // TEST ROOT
@@ -152,12 +200,14 @@ app.get("/api/test", (req, res) => {
 app.get("/api/db-test", async (req, res) => {
   try {
     await sequelize.authenticate();
+
     res.json({
       success: true,
       message: "Database berhasil terhubung",
     });
   } catch (error) {
     console.error(error);
+
     res.status(500).json({
       success: false,
       message: error.message,
@@ -180,9 +230,12 @@ app.use((req, res) => {
 // ======================================================
 app.use((err, req, res, next) => {
   console.error("SERVER ERROR:", err);
+
   res.status(500).json({
     success: false,
-    message: err.message || "Terjadi kesalahan server",
+    message:
+      err.message ||
+      "Terjadi kesalahan server",
   });
 });
 
@@ -191,59 +244,113 @@ app.use((err, req, res, next) => {
 // ======================================================
 const startServer = async () => {
   try {
+    // ==================================================
     // TEST DATABASE
+    // ==================================================
     await sequelize.authenticate();
+
     console.log("================================");
     console.log("DATABASE CONNECTED");
     console.log("================================");
 
+    // ==================================================
     // SYNC DATABASE
-    await sequelize.sync({ alter: true });
-    console.log("Semua model berhasil disinkronkan dan kolom database diperbarui!");
+    // ==================================================
+    await sequelize.sync({
+      alter: true,
+    });
 
+    console.log(
+      "Semua model berhasil disinkronkan dan kolom database diperbarui!"
+    );
+
+    // ==================================================
     // CHECK JWT SECRET
+    // ==================================================
     if (!process.env.JWT_SECRET) {
-      console.error("JWT_SECRET belum ada di .env");
+      console.error(
+        "JWT_SECRET belum ada di .env"
+      );
+
       process.exit(1);
     }
 
+    // ==================================================
     // PORT
-    const PORT = process.env.PORT || 5000;
+    // ==================================================
+    const PORT =
+      process.env.PORT || 5000;
 
+    // ==================================================
     // START SERVER
+    // ==================================================
     app.listen(PORT, () => {
       console.log("================================");
       console.log("PETCARE HUB ZALTA");
-      console.log(`Server : http://localhost:${PORT}`);
-      console.log(`API    : http://localhost:${PORT}/api`);
-      console.log(`Booking: http://localhost:${PORT}/api/bookings`);
-      console.log(`Transaksi: http://localhost:${PORT}/api/transactions`);
-      console.log(`Konsultasi: http://localhost:${PORT}/api/consultations`);
-      console.log(`Riwayat Berobat: http://localhost:${PORT}/api/medical-records`);
-      console.log(`Uploads: http://localhost:${PORT}/uploads`);
-      console.log(`Reviews: http://localhost:${PORT}/api/reviews`);
+      console.log(
+        `Server : http://localhost:${PORT}`
+      );
+      console.log(
+        `API    : http://localhost:${PORT}/api`
+      );
+      console.log(
+        `Booking: http://localhost:${PORT}/api/bookings`
+      );
+      console.log(
+        `Transaksi: http://localhost:${PORT}/api/transactions`
+      );
+      console.log(
+        `Konsultasi: http://localhost:${PORT}/api/consultations`
+      );
+      console.log(
+        `Riwayat Berobat: http://localhost:${PORT}/api/medical-records`
+      );
+      console.log(
+        `Uploads: http://localhost:${PORT}/uploads`
+      );
+      console.log(
+        `Reviews: http://localhost:${PORT}/api/reviews`
+      );
       console.log("================================");
     });
   } catch (error) {
-    console.error("GAGAL MENJALANKAN SERVER");
+    console.error(
+      "GAGAL MENJALANKAN SERVER"
+    );
+
     console.error(error);
+
     process.exit(1);
   }
 };
 
+// ======================================================
 // RUN SERVER
+// ======================================================
 startServer();
 
 // ======================================================
 // UNHANDLED REJECTION
 // ======================================================
-process.on("unhandledRejection", (error) => {
-  console.error("UNHANDLED REJECTION:", error);
-});
+process.on(
+  "unhandledRejection",
+  (error) => {
+    console.error(
+      "UNHANDLED REJECTION:",
+      error
+    );
+  }
+);
 
 // ======================================================
 // UNCAUGHT EXCEPTION
 // ======================================================
-process.on("uncaughtException", (error) => {
-  console.error("UNCAUGHT EXCEPTION:", error);
-});
+process.on(
+  "uncaughtException",
+  (error) => {
+    console.error(
+      "UNCAUGHT EXCEPTION:",
+      error
+    );
+  }
+);

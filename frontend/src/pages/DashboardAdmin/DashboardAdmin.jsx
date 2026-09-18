@@ -574,10 +574,37 @@ function DashboardAdmin() {
     }
   };
 
+  // =====================================================
+  // LOAD DATA OPTIMIZED
+  // - Initial data loaded once when the dashboard opens
+  // - Background refresh every 60 seconds instead of 10 seconds
+  // - No background request while the browser tab is hidden
+  // - Refresh immediately when the user returns to the tab
+  // =====================================================
   useEffect(() => {
+    let intervalId = null;
+
+    const refreshWhenVisible = () => {
+      if (document.visibilityState === "visible") {
+        loadAllDataSilently();
+      }
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        refreshWhenVisible();
+      }
+    };
+
     loadAllData();
-    const interval = setInterval(() => loadAllDataSilently(), 10000);
-    return () => clearInterval(interval);
+
+    intervalId = setInterval(refreshWhenVisible, 60000);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
   }, []);
 
   const currentData = useMemo(() => {
