@@ -1,7 +1,11 @@
-/* ===================================================
-   PALET WARNA & VARIABEL DESAIN PETCARE HUB ZALTA
-   =================================================== */
+
+
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+
+/* ===================================================
+   PALET WARNA & VARIABEL
+   =================================================== */
 
 :root {
   --zalta-teal: #028090;
@@ -14,211 +18,412 @@
   --zalta-bg: #f2f7f5;
   --zalta-card-bg: #ffffff;
   --zalta-border: #e2e8f0;
-  
-  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-  --shadow-md: 0 10px 25px -5px rgba(2, 128, 144, 0.08), 0 8px 10px -6px rgba(2, 128, 144, 0.04);
-  --shadow-lg: 0 20px 30px -10px rgba(2, 128, 144, 0.15);
-  
+
+  --shadow-sm:
+    0 4px 6px -1px rgba(0, 0, 0, 0.05),
+    0 2px 4px -1px rgba(0, 0, 0, 0.03);
+
+  --shadow-md:
+    0 10px 25px -5px rgba(2, 128, 144, 0.08),
+    0 8px 10px -6px rgba(2, 128, 144, 0.04);
+
+  --shadow-lg:
+    0 20px 30px -10px rgba(2, 128, 144, 0.15);
+
   --radius-sm: 8px;
   --radius-md: 14px;
   --radius-lg: 24px;
   --radius-full: 9999px;
 }
 
-/* Global Reset & Base Typography */
+
+/* ===================================================
+   GLOBAL RESET
+   =================================================== */
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+html {
+  scroll-behavior: smooth;
+  width: 100%;
+  overflow-x: hidden;
+}
+
 body {
+  width: 100%;
+  min-width: 320px;
   background-color: var(--zalta-bg);
   color: var(--zalta-dark);
-  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  font-family:
+    'Plus Jakarta Sans',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+
   line-height: 1.6;
+
   overflow-x: hidden;
+
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+img {
+  max-width: 100%;
+}
+
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+
+/* ===================================================
+   MAIN CONTAINER
+   =================================================== */
 
 .landing-container {
   width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
+
+
+/* ===================================================
+   GENERAL SECTION
+   =================================================== */
 
 .landing-section {
-  padding: 5.5rem 1.5rem;
   position: relative;
+  width: 100%;
+  padding: 5.5rem 1.5rem;
 }
 
-/* Header Sections */
+
+/* ===================================================
+   SECTION HEADER
+   =================================================== */
+
 .section-header-center {
-  text-align: center;
+  width: 100%;
   max-width: 720px;
-  margin: 0 auto 3.5rem auto;
+
+  margin: 0 auto 3.5rem;
+
+  text-align: center;
 }
 
 .section-badge {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+
   gap: 0.5rem;
+
   background-color: var(--zalta-teal-light);
   color: var(--zalta-teal);
+
   padding: 0.4rem 1rem;
+
   border-radius: var(--radius-full);
+
   font-weight: 700;
   font-size: 0.8rem;
+
   letter-spacing: 1px;
   text-transform: uppercase;
+
   margin-bottom: 0.8rem;
+
+  max-width: 100%;
 }
 
 .section-title {
   color: var(--zalta-dark);
+
   font-size: 2.4rem;
   font-weight: 800;
+
   line-height: 1.25;
+
   letter-spacing: -0.02em;
+
+  word-break: normal;
 }
 
 .section-description {
   color: var(--zalta-dark-muted);
+
   font-size: 1.05rem;
+
   margin-top: 0.8rem;
+
+  line-height: 1.7;
 }
+
 
 /* ===================================================
    SECTION TENTANG KAMI
    =================================================== */
+
 .about-section {
   background-color: var(--zalta-card-bg);
 }
 
 .about-container {
+  width: 100%;
   max-width: 1140px;
+
   margin: 0 auto;
+
   display: grid;
-  grid-template-columns: 1fr 1fr;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    minmax(0, 1fr);
+
   gap: 4rem;
+
   align-items: center;
 }
 
 .about-image-wrapper {
   position: relative;
+  width: 100%;
 }
 
 .about-image {
+  display: block;
+
   width: 100%;
   height: 420px;
+
   object-fit: cover;
+
   border-radius: var(--radius-lg);
+
   box-shadow: var(--shadow-lg);
 }
 
-/* Floating Card Accent di Foto */
+
+/* ===================================================
+   FLOATING CARD
+   =================================================== */
+
 .about-floating-card {
   position: absolute;
+
   bottom: -20px;
   right: -20px;
+
   background: white;
+
   padding: 1.2rem 1.5rem;
+
   border-radius: var(--radius-md);
+
   box-shadow: var(--shadow-md);
+
   border-left: 5px solid var(--zalta-amber);
+
   display: flex;
   align-items: center;
+
   gap: 1rem;
+
+  z-index: 2;
+
+  max-width: calc(100% - 10px);
 }
 
 .about-floating-card .number {
   font-size: 2rem;
+
   font-weight: 800;
+
   color: var(--zalta-teal);
+
+  white-space: nowrap;
 }
 
 .about-floating-card .label {
   font-size: 0.85rem;
+
   font-weight: 600;
+
   color: var(--zalta-dark-muted);
+
   line-height: 1.2;
 }
+
+
+/* ===================================================
+   ABOUT CONTENT
+   =================================================== */
 
 .about-content {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+
+  min-width: 0;
 }
 
 .about-text {
   color: var(--zalta-dark-muted);
+
   font-size: 1.02rem;
+
   margin-bottom: 1.2rem;
+
   line-height: 1.7;
 }
 
+
+/* ===================================================
+   PRIMARY BUTTON
+   =================================================== */
+
 .btn-primary {
   display: inline-flex;
+
   align-items: center;
+  justify-content: center;
+
   gap: 0.75rem;
-  background: linear-gradient(135deg, var(--zalta-teal), var(--zalta-mint));
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--zalta-teal),
+      var(--zalta-mint)
+    );
+
   color: white;
+
   border: none;
+
   padding: 1rem 2.2rem;
+
   border-radius: var(--radius-full);
+
   font-weight: 700;
+
   font-size: 1rem;
+
   cursor: pointer;
-  box-shadow: 0 10px 20px rgba(2, 128, 144, 0.25);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  box-shadow:
+    0 10px 20px rgba(2, 128, 144, 0.25);
+
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+
   margin-top: 0.8rem;
+
+  max-width: 100%;
 }
 
 .btn-primary:hover {
   transform: translateY(-3px);
-  box-shadow: 0 14px 28px rgba(2, 128, 144, 0.35);
+
+  box-shadow:
+    0 14px 28px rgba(2, 128, 144, 0.35);
 }
 
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+
 /* ===================================================
-   SECTION SHOWCASE CATEGORY HEWAN
+   CATEGORY HEWAN
    =================================================== */
+
 .pet-category-section {
   background-color: var(--zalta-bg);
 }
 
 .pet-category-grid {
+  width: 100%;
   max-width: 1140px;
+
   margin: 0 auto;
+
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+
+  grid-template-columns:
+    repeat(auto-fit, minmax(200px, 1fr));
+
   gap: 1.5rem;
 }
 
 .pet-category-card {
-  background: var(--zalta-card-bg);
-  padding: 2.2rem 1.5rem;
-  border-radius: var(--radius-md);
-  text-align: center;
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--zalta-border);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
+
+  background: var(--zalta-card-bg);
+
+  padding: 2.2rem 1.5rem;
+
+  border-radius: var(--radius-md);
+
+  text-align: center;
+
+  box-shadow: var(--shadow-sm);
+
+  border: 1px solid var(--zalta-border);
+
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+
   overflow: hidden;
+
+  min-width: 0;
 }
 
 .pet-category-card::before {
   content: '';
+
   position: absolute;
+
   top: 0;
   left: 0;
+
   width: 100%;
   height: 4px;
-  background: linear-gradient(90deg, var(--zalta-teal), var(--zalta-amber));
+
+  background:
+    linear-gradient(
+      90deg,
+      var(--zalta-teal),
+      var(--zalta-amber)
+    );
+
   opacity: 0;
-  transition: opacity 0.3s;
+
+  transition: opacity 0.3s ease;
 }
 
 .pet-category-card:hover {
   transform: translateY(-8px);
+
   box-shadow: var(--shadow-md);
+
   border-color: transparent;
 }
 
@@ -226,187 +431,1183 @@ body {
   opacity: 1;
 }
 
+
+/* ===================================================
+   PET ICON
+   =================================================== */
+
 .pet-icon-box {
   width: 64px;
   height: 64px;
+
   background-color: var(--zalta-teal-light);
+
   color: var(--zalta-teal);
+
   border-radius: 50%;
+
   display: flex;
+
   align-items: center;
   justify-content: center;
-  margin: 0 auto 1.2rem auto;
+
+  margin: 0 auto 1.2rem;
+
   font-size: 1.8rem;
-  transition: all 0.3s ease;
+
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    transform 0.3s ease;
 }
 
 .pet-category-card:hover .pet-icon-box {
   background-color: var(--zalta-teal);
+
   color: white;
+
   transform: scale(1.08);
 }
 
 .pet-category-card h3 {
   font-size: 1.15rem;
+
   font-weight: 700;
+
   color: var(--zalta-dark);
+
   margin-bottom: 0.5rem;
+
+  line-height: 1.4;
 }
 
 .pet-category-card p {
   font-size: 0.88rem;
+
   color: var(--zalta-dark-muted);
+
   line-height: 1.5;
 }
 
+
 /* ===================================================
-   SECTION KONSULTASI (FORMULIR TERPADU)
+   KONSULTASI
    =================================================== */
+
 .consultation-section {
-  background: linear-gradient(180deg, #ffffff 0%, var(--zalta-bg) 100%);
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff 0%,
+      var(--zalta-bg) 100%
+    );
 }
 
 .consultation-card {
+  width: 100%;
   max-width: 720px;
+
   margin: 0 auto;
+
   background: var(--zalta-card-bg);
+
   padding: 3rem;
+
   border-radius: var(--radius-lg);
+
   box-shadow: var(--shadow-md);
+
   border: 1px solid var(--zalta-border);
+}
+
+.consultation-form {
+  width: 100%;
 }
 
 .consult-grid-2 {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    minmax(0, 1fr);
+
   gap: 1.2rem;
 }
 
 .consultation-form .form-group {
+  width: 100%;
+
   margin-bottom: 1.3rem;
+
   display: flex;
+
   flex-direction: column;
 }
 
 .consultation-form label {
   font-weight: 700;
+
   font-size: 0.88rem;
+
   margin-bottom: 0.5rem;
+
   color: var(--zalta-dark);
 }
 
 .consultation-form input,
 .consultation-form select,
 .consultation-form textarea {
+  width: 100%;
+  max-width: 100%;
+
   padding: 0.95rem 1.1rem;
-  border: 1.5px solid var(--zalta-border);
+
+  border:
+    1.5px solid
+    var(--zalta-border);
+
   border-radius: var(--radius-sm);
+
   font-size: 0.95rem;
+
   font-family: inherit;
+
   outline: none;
+
   background-color: #fafcfb;
-  transition: all 0.25s ease;
+
+  transition:
+    border-color 0.25s ease,
+    background-color 0.25s ease,
+    box-shadow 0.25s ease;
+
   color: var(--zalta-dark);
+}
+
+.consultation-form textarea {
+  resize: vertical;
+
+  min-height: 130px;
+
+  line-height: 1.6;
+}
+
+.consultation-form input::placeholder,
+.consultation-form textarea::placeholder {
+  color: #94a3b8;
 }
 
 .consultation-form input:focus,
 .consultation-form select:focus,
 .consultation-form textarea:focus {
   border-color: var(--zalta-teal);
+
   background-color: #ffffff;
-  box-shadow: 0 0 0 4px rgba(2, 128, 144, 0.12);
+
+  box-shadow:
+    0 0 0 4px
+    rgba(2, 128, 144, 0.12);
 }
 
+
+/* ===================================================
+   BUTTON KONSULTASI
+   =================================================== */
+
 .btn-submit-consult {
-  background: linear-gradient(135deg, var(--zalta-amber), var(--zalta-coral));
-  color: white;
-  border: none;
-  padding: 1.1rem 1.8rem;
-  border-radius: var(--radius-md);
-  font-weight: 700;
-  cursor: pointer;
   width: 100%;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--zalta-amber),
+      var(--zalta-coral)
+    );
+
+  color: white;
+
+  border: none;
+
+  padding: 1.1rem 1.8rem;
+
+  border-radius: var(--radius-md);
+
+  font-weight: 700;
+
+  cursor: pointer;
+
   display: flex;
+
   align-items: center;
   justify-content: center;
+
   gap: 0.6rem;
+
   font-size: 1.02rem;
-  box-shadow: 0 8px 20px rgba(244, 162, 97, 0.3);
-  transition: all 0.3s ease;
+
+  box-shadow:
+    0 8px 20px
+    rgba(244, 162, 97, 0.3);
+
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+
   margin-top: 0.5rem;
 }
 
 .btn-submit-consult:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 25px rgba(244, 162, 97, 0.45);
+
+  box-shadow:
+    0 12px 25px
+    rgba(244, 162, 97, 0.45);
 }
 
+.btn-submit-consult:active {
+  transform: translateY(0);
+}
+
+
 /* ===================================================
-   SECTION KONTAK
+   CONTACT
    =================================================== */
+
 .contact-section {
   background-color: var(--zalta-card-bg);
 }
 
 .contact-grid {
+  width: 100%;
   max-width: 1140px;
+
   margin: 0 auto;
+
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+
+  grid-template-columns:
+    repeat(auto-fit, minmax(280px, 1fr));
+
   gap: 2rem;
 }
 
 .contact-card {
   background: var(--zalta-bg);
+
   padding: 2.2rem;
+
   border-radius: var(--radius-md);
+
   text-align: center;
+
   border: 1px solid var(--zalta-border);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    background-color 0.3s ease;
+
+  min-width: 0;
 }
 
 .contact-card:hover {
   transform: translateY(-5px);
+
   box-shadow: var(--shadow-sm);
+
   background: #ffffff;
 }
 
+
+/* ===================================================
+   CONTACT ICON
+   =================================================== */
+
 .contact-icon-wrapper {
   background: var(--zalta-teal);
+
   color: white;
+
   width: 58px;
   height: 58px;
+
   border-radius: 50%;
+
   display: flex;
+
   align-items: center;
   justify-content: center;
-  margin: 0 auto 1.2rem auto;
+
+  margin: 0 auto 1.2rem;
+
   font-size: 1.4rem;
-  box-shadow: 0 6px 15px rgba(2, 128, 144, 0.25);
+
+  box-shadow:
+    0 6px 15px
+    rgba(2, 128, 144, 0.25);
 }
 
 .contact-card h3 {
   color: var(--zalta-dark);
+
   font-size: 1.15rem;
+
   font-weight: 700;
+
   margin-bottom: 0.4rem;
 }
 
 .contact-card p {
   color: var(--zalta-dark-muted);
+
   font-size: 0.95rem;
+
+  overflow-wrap: anywhere;
+
+  word-break: break-word;
 }
 
-/* Responsive Handling */
-@media (max-width: 900px) {
+
+/* ===================================================
+   LAPTOP
+   <= 1200px
+   =================================================== */
+
+@media (max-width: 1200px) {
+
+  .about-container,
+  .pet-category-grid,
+  .contact-grid {
+    max-width: 1000px;
+  }
+
   .about-container {
-    grid-template-columns: 1fr;
-    gap: 2.5rem;
-  }
-  .consult-grid-2 {
-    grid-template-columns: 1fr;
-  }
-  .section-title {
-    font-size: 1.9rem;
+    gap: 3rem;
   }
 }
+
+
+/* ===================================================
+   TABLET BESAR
+   <= 1024px
+   =================================================== */
+
+@media (max-width: 1024px) {
+
+  .landing-section {
+    padding: 5rem 2rem;
+  }
+
+  .section-title {
+    font-size: 2.1rem;
+  }
+
+  .section-description {
+    font-size: 0.98rem;
+  }
+
+
+  /* ABOUT */
+
+  .about-container {
+    max-width: 900px;
+
+    gap: 2.5rem;
+  }
+
+  .about-image {
+    height: 370px;
+  }
+
+  .about-floating-card {
+    right: -10px;
+    bottom: -15px;
+  }
+
+
+  /* CATEGORY */
+
+  .pet-category-grid {
+    max-width: 900px;
+
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+
+    gap: 1.2rem;
+  }
+
+  .pet-category-card {
+    padding: 2rem 1.2rem;
+  }
+
+
+  /* CONSULTATION */
+
+  .consultation-card {
+    max-width: 680px;
+
+    padding: 2.5rem;
+  }
+
+
+  /* CONTACT */
+
+  .contact-grid {
+    max-width: 900px;
+
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+
+    gap: 1.2rem;
+  }
+
+  .contact-card {
+    padding: 1.8rem 1rem;
+  }
+}
+
+
+/* ===================================================
+   TABLET
+   <= 900px
+   =================================================== */
+
+@media (max-width: 900px) {
+
+  .landing-section {
+    padding: 4.5rem 1.5rem;
+  }
+
+
+  /* ABOUT */
+
+  .about-container {
+    grid-template-columns: 1fr;
+
+    gap: 3rem;
+
+    max-width: 720px;
+  }
+
+  .about-image-wrapper {
+    width: 100%;
+  }
+
+  .about-image {
+    height: 400px;
+  }
+
+  .about-content {
+    align-items: flex-start;
+  }
+
+
+  /* FORM */
+
+  .consult-grid-2 {
+    grid-template-columns: 1fr;
+
+    gap: 0;
+  }
+
+
+  /* CATEGORY */
+
+  .pet-category-grid {
+    max-width: 720px;
+
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+
+  /* CONTACT */
+
+  .contact-grid {
+    max-width: 720px;
+
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+
+/* ===================================================
+   MOBILE BESAR
+   <= 768px
+   =================================================== */
+
+@media (max-width: 768px) {
+
+  .landing-section {
+    padding: 4rem 1.2rem;
+  }
+
+
+  /* SECTION HEADER */
+
+  .section-header-center {
+    margin-bottom: 2.5rem;
+  }
+
+  .section-badge {
+    font-size: 0.7rem;
+
+    padding: 0.35rem 0.8rem;
+
+    letter-spacing: 0.7px;
+  }
+
+  .section-title {
+    font-size: 1.8rem;
+
+    line-height: 1.3;
+  }
+
+  .section-description {
+    font-size: 0.9rem;
+
+    line-height: 1.6;
+  }
+
+
+  /* ABOUT */
+
+  .about-container {
+    width: 100%;
+
+    gap: 2.5rem;
+  }
+
+  .about-image {
+    height: 320px;
+
+    border-radius: 18px;
+  }
+
+  .about-floating-card {
+    right: 10px;
+
+    bottom: -18px;
+
+    padding: 0.9rem 1rem;
+
+    gap: 0.7rem;
+
+    border-left-width: 4px;
+  }
+
+  .about-floating-card .number {
+    font-size: 1.5rem;
+  }
+
+  .about-floating-card .label {
+    font-size: 0.72rem;
+  }
+
+  .about-content {
+    width: 100%;
+  }
+
+  .about-text {
+    font-size: 0.9rem;
+
+    line-height: 1.7;
+
+    margin-bottom: 1rem;
+  }
+
+
+  /* BUTTON */
+
+  .btn-primary {
+    width: 100%;
+
+    justify-content: center;
+
+    padding: 0.9rem 1.2rem;
+
+    font-size: 0.88rem;
+  }
+
+
+  /* CATEGORY */
+
+  .pet-category-grid {
+    width: 100%;
+
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+
+    gap: 1rem;
+  }
+
+  .pet-category-card {
+    padding: 1.5rem 1rem;
+
+    border-radius: 12px;
+  }
+
+  .pet-icon-box {
+    width: 55px;
+    height: 55px;
+
+    font-size: 1.5rem;
+
+    margin-bottom: 0.8rem;
+  }
+
+  .pet-category-card h3 {
+    font-size: 0.95rem;
+
+    line-height: 1.3;
+  }
+
+  .pet-category-card p {
+    font-size: 0.76rem;
+
+    line-height: 1.5;
+  }
+
+
+  /* CONSULTATION */
+
+  .consultation-card {
+    width: 100%;
+
+    padding: 1.5rem;
+
+    border-radius: 18px;
+  }
+
+  .consultation-form .form-group {
+    margin-bottom: 1rem;
+  }
+
+  .consultation-form label {
+    font-size: 0.8rem;
+  }
+
+  .consultation-form input,
+  .consultation-form select,
+  .consultation-form textarea {
+    width: 100%;
+
+    font-size: 0.85rem;
+
+    padding: 0.85rem 0.9rem;
+  }
+
+  .consultation-form textarea {
+    min-height: 120px;
+  }
+
+  .btn-submit-consult {
+    font-size: 0.85rem;
+
+    padding: 0.95rem 1rem;
+  }
+
+
+  /* CONTACT */
+
+  .contact-grid {
+    width: 100%;
+
+    grid-template-columns: 1fr;
+
+    gap: 1rem;
+  }
+
+  .contact-card {
+    padding: 1.6rem 1rem;
+  }
+
+  .contact-icon-wrapper {
+    width: 52px;
+    height: 52px;
+
+    font-size: 1.2rem;
+
+    margin-bottom: 1rem;
+  }
+
+  .contact-card h3 {
+    font-size: 1rem;
+  }
+
+  .contact-card p {
+    font-size: 0.82rem;
+  }
+}
+
+
+/* ===================================================
+   MOBILE
+   <= 600px
+   =================================================== */
+
+@media (max-width: 600px) {
+
+  .landing-section {
+    padding: 3.5rem 1rem;
+  }
+
+  .section-header-center {
+    margin-bottom: 2.2rem;
+  }
+
+  .section-title {
+    font-size: 1.65rem;
+  }
+
+  .section-description {
+    font-size: 0.84rem;
+  }
+
+
+  /* ABOUT */
+
+  .about-image {
+    height: 280px;
+
+    border-radius: 16px;
+  }
+
+  .about-floating-card {
+    right: 5px;
+
+    bottom: -16px;
+
+    padding: 0.75rem 0.9rem;
+  }
+
+  .about-floating-card .number {
+    font-size: 1.3rem;
+  }
+
+  .about-floating-card .label {
+    font-size: 0.68rem;
+  }
+
+  .about-content .section-title {
+    font-size: 1.6rem;
+  }
+
+  .about-text {
+    font-size: 0.84rem;
+  }
+
+
+  /* CATEGORY */
+
+  .pet-category-grid {
+    grid-template-columns: 1fr;
+
+    gap: 0.8rem;
+  }
+
+  .pet-category-card {
+    display: grid;
+
+    grid-template-columns: 55px minmax(0, 1fr);
+
+    column-gap: 1rem;
+
+    align-items: center;
+
+    text-align: left;
+
+    padding: 1rem;
+  }
+
+  .pet-icon-box {
+    grid-row: span 2;
+
+    width: 50px;
+    height: 50px;
+
+    margin: 0;
+
+    font-size: 1.35rem;
+  }
+
+  .pet-category-card h3 {
+    font-size: 0.9rem;
+
+    margin-bottom: 0.2rem;
+  }
+
+  .pet-category-card p {
+    font-size: 0.72rem;
+  }
+
+
+  /* CONSULTATION */
+
+  .consultation-card {
+    padding: 1.1rem;
+
+    border-radius: 15px;
+  }
+
+  .consultation-form input,
+  .consultation-form select,
+  .consultation-form textarea {
+    font-size: 0.8rem;
+
+    padding: 0.75rem;
+  }
+
+  .consultation-form textarea {
+    min-height: 110px;
+  }
+
+  .btn-submit-consult {
+    font-size: 0.78rem;
+
+    padding: 0.85rem 0.7rem;
+  }
+
+
+  /* CONTACT */
+
+  .contact-card {
+    padding: 1.4rem 0.9rem;
+  }
+
+  .contact-icon-wrapper {
+    width: 48px;
+    height: 48px;
+
+    font-size: 1.05rem;
+  }
+
+  .contact-card h3 {
+    font-size: 0.9rem;
+  }
+
+  .contact-card p {
+    font-size: 0.76rem;
+  }
+}
+
+
+/* ===================================================
+   HP KECIL
+   <= 480px
+   =================================================== */
+
+@media (max-width: 480px) {
+
+  .landing-section {
+    padding: 3rem 0.85rem;
+  }
+
+  .section-header-center {
+    margin-bottom: 2rem;
+  }
+
+  .section-badge {
+    font-size: 0.62rem;
+
+    padding: 0.32rem 0.7rem;
+
+    letter-spacing: 0.5px;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+
+    line-height: 1.3;
+  }
+
+  .section-description {
+    font-size: 0.78rem;
+
+    line-height: 1.6;
+  }
+
+
+  /* ABOUT */
+
+  .about-container {
+    gap: 2.2rem;
+  }
+
+  .about-image {
+    height: 240px;
+
+    border-radius: 14px;
+  }
+
+  .about-floating-card {
+    position: relative;
+
+    right: auto;
+    bottom: auto;
+
+    width: calc(100% - 20px);
+
+    margin: -18px auto 0;
+
+    padding: 0.75rem 0.85rem;
+
+    border-left-width: 4px;
+  }
+
+  .about-floating-card .number {
+    font-size: 1.2rem;
+  }
+
+  .about-floating-card .label {
+    font-size: 0.65rem;
+  }
+
+  .about-content .section-title {
+    font-size: 1.5rem;
+  }
+
+  .about-text {
+    font-size: 0.8rem;
+
+    line-height: 1.7;
+  }
+
+  .btn-primary {
+    font-size: 0.78rem;
+
+    padding: 0.8rem 0.9rem;
+  }
+
+
+  /* CATEGORY */
+
+  .pet-category-card {
+    grid-template-columns: 48px minmax(0, 1fr);
+
+    column-gap: 0.8rem;
+
+    padding: 0.85rem;
+  }
+
+  .pet-icon-box {
+    width: 44px;
+    height: 44px;
+
+    font-size: 1.15rem;
+  }
+
+  .pet-category-card h3 {
+    font-size: 0.82rem;
+  }
+
+  .pet-category-card p {
+    font-size: 0.68rem;
+
+    line-height: 1.45;
+  }
+
+
+  /* CONSULTATION */
+
+  .consultation-card {
+    padding: 0.9rem;
+
+    border-radius: 14px;
+  }
+
+  .consultation-form label {
+    font-size: 0.75rem;
+  }
+
+  .consultation-form input,
+  .consultation-form select,
+  .consultation-form textarea {
+    font-size: 0.76rem;
+
+    padding: 0.7rem;
+  }
+
+  .btn-submit-consult {
+    font-size: 0.72rem;
+
+    padding: 0.8rem 0.6rem;
+  }
+
+
+  /* CONTACT */
+
+  .contact-card {
+    padding: 1.2rem 0.8rem;
+  }
+
+  .contact-icon-wrapper {
+    width: 45px;
+    height: 45px;
+
+    font-size: 1rem;
+
+    margin-bottom: 0.8rem;
+  }
+
+  .contact-card h3 {
+    font-size: 0.85rem;
+  }
+
+  .contact-card p {
+    font-size: 0.72rem;
+  }
+}
+
+
+/* ===================================================
+   HP SANGAT KECIL
+   <= 360px
+   =================================================== */
+
+@media (max-width: 360px) {
+
+  .landing-section {
+    padding: 2.7rem 0.7rem;
+  }
+
+  .section-title {
+    font-size: 1.35rem;
+  }
+
+  .section-description {
+    font-size: 0.73rem;
+  }
+
+  .section-badge {
+    font-size: 0.58rem;
+  }
+
+
+  /* ABOUT */
+
+  .about-image {
+    height: 210px;
+  }
+
+  .about-content .section-title {
+    font-size: 1.35rem;
+  }
+
+  .about-text {
+    font-size: 0.75rem;
+  }
+
+
+  /* CATEGORY */
+
+  .pet-category-card {
+    grid-template-columns: 44px minmax(0, 1fr);
+
+    padding: 0.75rem;
+  }
+
+  .pet-icon-box {
+    width: 40px;
+    height: 40px;
+
+    font-size: 1rem;
+  }
+
+  .pet-category-card h3 {
+    font-size: 0.78rem;
+  }
+
+  .pet-category-card p {
+    font-size: 0.64rem;
+  }
+
+
+  /* FORM */
+
+  .consultation-card {
+    padding: 0.75rem;
+  }
+
+  .consultation-form input,
+  .consultation-form select,
+  .consultation-form textarea {
+    font-size: 0.72rem;
+  }
+
+  .btn-submit-consult {
+    font-size: 0.68rem;
+  }
+}
+
+
+/* ===================================================
+   TOUCH DEVICE
+   Agar hover tidak mengganggu di HP
+   =================================================== */
+
+@media (hover: none) and (pointer: coarse) {
+
+  .pet-category-card:hover {
+    transform: none;
+
+    box-shadow: var(--shadow-sm);
+
+    border-color: var(--zalta-border);
+  }
+
+  .pet-category-card:hover::before {
+    opacity: 0;
+  }
+
+  .pet-category-card:hover .pet-icon-box {
+    background-color: var(--zalta-teal-light);
+
+    color: var(--zalta-teal);
+
+    transform: none;
+  }
+
+  .contact-card:hover {
+    transform: none;
+
+    box-shadow: none;
+
+    background: var(--zalta-bg);
+  }
+
+  .btn-primary:hover,
+  .btn-submit-consult:hover {
+    transform: none;
+  }
+}
+
+
+/* ===================================================
+   ACCESSIBILITY / FOCUS
+   =================================================== */
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid rgba(2, 128, 144, 0.25);
+
+  outline-offset: 2px;
+}
+
+
+/* ===================================================
+   PREVENT HORIZONTAL OVERFLOW
+   =================================================== */
+
+.landing-container,
+.landing-section,
+.about-container,
+.pet-category-grid,
+.consultation-card,
+.contact-grid {
+  max-width: 100%;
+}
+
